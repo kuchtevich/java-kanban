@@ -7,11 +7,11 @@ public class SubTask extends Task {
     public SubTask(String name, String description, Status status, int id) {
         super(name, description, status, id);
     }
-    public Epic getEpic() { //можно получить новое значение
+    public Epic getEpic() {
         return epic;
     }
 
-    public void setEpic(Epic epic) { //для сохранения нового значения
+    public void setEpic(Epic epic) {
         this.epic = epic;
     }
 

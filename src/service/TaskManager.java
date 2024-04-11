@@ -63,6 +63,11 @@ public class TaskManager {
     }
 
     public SubTask addNewSubtask(SubTask subTask) {
+        epics.get(subTask.getId());
+        if(epics == null) {
+            System.out.println("Ошибка.");
+            return null;
+        }
         subTask.setId(generateId());
         subTasks.put(subTask.getId(), subTask);
         return subTask;
@@ -88,10 +93,13 @@ public class TaskManager {
         for (SubTask subTask : subTasks) {
             if (subTask.getStatus().equals(Status.DONE)) {
                Status status = Status.DONE;
+             saved.setStatus(epic.getStatus());
             } else if (subTask.getStatus().equals(Status.IN_PROGRESS)) {
                 Status status = Status.IN_PROGRESS;
+                saved.setStatus(epic.getStatus());
             } else if (subTask.getStatus().equals(Status.NEW)) {
                 Status status = Status.NEW;
+                saved.setStatus(epic.getStatus());
             }
         }
         }
@@ -104,22 +112,30 @@ public class TaskManager {
             saved.setStatus(subTask.getStatus());
     }
     public void deleteTask(int id) {
-     tasks.remove(id);
+        if (tasks.containsKey(id)) {
+            tasks.remove(id);
+        } else {
+            System.out.println("Ошибка.");
+        }
+
     }
 
     public void deleteEpic(int id) {
         epics.remove(id);
     }
 
-    public void deleteSubtask(int id) {
+    public void  deleteSubtask(int id) {
         subTasks.remove(id);
      }
 
-    public void deleteAllTasks() {
-    tasks.clear();
+    public void removeAllTask() {
+        tasks.clear();
+        for (Task task : tasks.values()) {
+            tasks.clear();
+        }
     }
 
-    public void deleteAllSubtasks() {
+    public void removeAllSubtasks() {
         subTasks.clear();
         for(Epic epic : epics.values()) {
             List<SubTask> subTasks = epic.getSubTasks();
@@ -130,7 +146,7 @@ public class TaskManager {
         }
         }
 
-    public void deleteAllEpics() {
+    public void removeAllEpics() {
         for (Epic epic : epics.values()) {
             List<SubTask> subTasks = epic.getSubTasks();
             for (SubTask subTask : subTasks) {

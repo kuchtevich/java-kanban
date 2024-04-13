@@ -12,6 +12,7 @@ public class Main {
             "сменить профессию", Status.NEW,1));
     System.out.println("Создана новая задача: " + task);
 
+
     Task task2 = taskManager.addNewTask(new Task("Cоздание новой задачи",
                 "сменить город", Status.IN_PROGRESS,2));
     System.out.println("Создана новая задача: " + task2);
@@ -20,40 +21,41 @@ public class Main {
     Epic epic =  taskManager.addNewEpic(new Epic("Создание нового эпика", "учеба", 3));
     System.out.println("Новый эпик создан: " + epic);
 
+    Epic epic2 =  taskManager.addNewEpic(new Epic("Создание нового", "сдать ТЗ", 6));
+    System.out.println("Новый эпик создан: " + epic2);
+
     SubTask subTask = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
             "учеба", Status.IN_PROGRESS, 4));
-    System.out.println("Подзадача выполнена: " + subTask);
+    System.out.println("Подзадача " + subTask);
 
-        SubTask subTask2 = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
+    SubTask subTask2 = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
                 "учеба", Status.IN_PROGRESS, 5));
-        System.out.println("Подзадача выполнена: " + subTask2);
+    System.out.println("Подзадача " + subTask2);
 
-        Epic epic2 =  taskManager.addNewEpic(new Epic("Создание нового", "сдать ТЗ", 6));
-        System.out.println("Новый эпик создан: " + epic2);
 
-        SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
+    SubTask subTask3 = taskManager.addNewSubtask( new SubTask("Создание нового",
                 "сдать ТЗ", Status.IN_PROGRESS, 7));
-        System.out.println("Подзадача выполнена: " + subTask3);
+    System.out.println("Подзадача " + subTask3);
 
 
    System.out.println(taskManager.getAllTasks());
-   System.out.println(taskManager.getAllSubTasks());
+   System.out.println(taskManager.getSubtask(7));
    System.out.println(taskManager.getAllEpics());
 
 
-        task2.setName("Задача.");
-        task2.setStatus(Status.IN_PROGRESS);
-        taskManager.updateTask(task2);
-        System.out.println(task2);
+   task2.setName("Задача.");
+   task2.setStatus(Status.IN_PROGRESS);
+   taskManager.updateTask(task2);
+   System.out.println(task2);
 
-        System.out.println(taskManager.getAllEpicSubtasks(6));
+   System.out.println(taskManager.getAllEpicSubtasks(3));
 
-        epic2.setStatus(Status.IN_PROGRESS);
-        taskManager.updateEpic(epic2);
-        System.out.println(epic2);
+   epic2.setStatus(Status.IN_PROGRESS);
+   taskManager.updateEpic(epic2);
+   System.out.println(epic2);
 
-       taskManager.removeAllTask();
-        System.out.println(taskManager.getAllTasks());
+   taskManager.removeAllTask();
+   System.out.println(taskManager.getAllTasks());
 
     }
 }

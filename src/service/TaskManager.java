@@ -63,15 +63,14 @@ public class TaskManager {
     }
 
     public SubTask addNewSubtask(SubTask subTask) {
-        epics.get(subTask.getId());
-        if(epics == null) {
-            System.out.println("Ошибка.");
-            return null;
+        Epic epic = epics.get(subTask.getEpicId());
+        if (epic != null) {
+            subTask.setId(generateId());
+            subTasks.put(subTask.getId(), subTask);
+            epic.addSubTask(subTask);
+            updateEpic(epic);
         }
-        subTask.setId(generateId());
-        subTasks.put(subTask.getId(), subTask);
-        return subTask;
-
+            return subTask;
     }
 
     public void updateTask(Task task) {

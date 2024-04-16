@@ -54,8 +54,18 @@ public class Main {
    taskManager.updateEpic(epic2);
    System.out.println(epic2);
 
-   taskManager.removeAllTask();
-   System.out.println(taskManager.getAllTasks());
+   //taskManager.removeAllTask();
+   //System.out.println(taskManager.getAllTasks());
+
+   //taskManager.removeAllEpics();
+   //System.out.println(taskManager.getAllEpics());
+
+ //taskManager.deleteSubtask(7);
+  //System.out.println(subTask3);
+
+
+   taskManager.deleteEpic(4);
+   System.out.println("Удалено. " + epic2);
 
     }
 }

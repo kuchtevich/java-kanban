@@ -18,8 +18,6 @@ public class Task {
       this.status=status;
    }
 
-
-
    public void setName(String name) {
         this.name = name;
     }

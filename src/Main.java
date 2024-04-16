@@ -50,22 +50,22 @@ public class Main {
 
    System.out.println(taskManager.getAllEpicSubtasks(4));
 
-   epic2.setStatus(Status.IN_PROGRESS);
+   subTask3.setStatus(Status.DONE);
    taskManager.updateEpic(epic2);
    System.out.println(epic2);
 
-   //taskManager.removeAllTask();
-   //System.out.println(taskManager.getAllTasks());
+   taskManager.removeAllTask();
+   System.out.println(taskManager.getAllTasks());
 
-   //taskManager.removeAllEpics();
-   //System.out.println(taskManager.getAllEpics());
+   taskManager.removeAllEpics();
+   System.out.println(taskManager.getAllEpics());
 
- //taskManager.deleteSubtask(7);
-  //System.out.println(subTask3);
+  taskManager.deleteSubtask(7);
+  System.out.println(subTask3);
 
 
-   taskManager.deleteEpic(4);
-   System.out.println("Удалено. " + epic2);
+  taskManager.deleteEpic(4);
+  System.out.println("Удалено. " + taskManager.getEpic(4));
 
     }
 }

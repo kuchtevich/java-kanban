@@ -114,6 +114,10 @@ public class TaskManager {
                 System.out.println("Ошибка!");
             } else {
                 subTasks.put(subTask.getId(), subTask);
+                saved.setName(subTask.getName());
+                saved.setDescription(subTask.getDescription());
+                saved.setId(subTask.getId());
+                saved.setStatus(subTask.getStatus());
                 Epic epic = epics.get(subTask.getId());
                 epic.calcStatus();
             }

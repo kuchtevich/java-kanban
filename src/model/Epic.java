@@ -6,8 +6,8 @@ import java.util.List;
 public class Epic extends Task {
     private List<SubTask> subTasks = new ArrayList<>();
 
-    public Epic(String name, String description, Status status) {
-        super(name, description, status);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW);
     }
 
     public Epic(String name, String description, int id) {
@@ -32,13 +32,11 @@ public class Epic extends Task {
         calcStatus();
     }
 
-    //удалить единичную подзадачу из хранилища subTasks
     public void removeSubTask(SubTask subTask) {
         subTasks.remove(subTask);
         calcStatus();
     }
 
-    //очистить все данные хранилища subTasks
     public void removeAllSubtasks() {
         subTasks.clear();
         calcStatus();

@@ -82,7 +82,6 @@ public class TaskManager {
             subTask.setId(generateId());
             subTasks.put(subTask.getId(), subTask);
             epic.addSubTask(subTask);
-            epic.calcStatus();
         }
         return subTask;
     }
@@ -103,7 +102,6 @@ public class TaskManager {
         } else {
             saved.setName(epic.getName());
             saved.setDescription(epic.getDescription());
-            epic.calcStatus();
         }
     }
 
@@ -111,16 +109,11 @@ public class TaskManager {
         SubTask saved = subTasks.get(subTask.getId());
         if (saved == null) {
             System.out.println("Ошибка!");
-            return;
         } else {
-            if (subTask.getEpicId() != subTask.getId()) {
+            if (subTask.getEpicId() != saved.getEpicId()) {
                 System.out.println("Ошибка!");
-                return;
             } else {
-                saved.setName(subTask.getName());
-                saved.setDescription(subTask.getDescription());
-                saved.setId(subTask.getId());
-                saved.setStatus(subTask.getStatus());
+                subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
                 epic.calcStatus();
             }
@@ -147,7 +140,6 @@ public class TaskManager {
             subTasks.remove(subTask.getId());
         }
 
-        // epic.removeAllSubtasks();
         epics.remove(id);
     }
 

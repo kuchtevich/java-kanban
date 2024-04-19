@@ -46,7 +46,7 @@ public class Main {
    task2.setName("Задача.");
    task2.setStatus(Status.IN_PROGRESS);
    taskManager.updateTask(task2);
-   System.out.println(task2);
+   System.out.println(taskManager.getEpic(3));
 
    System.out.println(taskManager.getAllEpicSubtasks(4));
 

@@ -58,5 +58,25 @@ public class Task {
               ", id='" + id +
               '}';
    }
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
 
-}
+      if (!(obj instanceof Task)) {
+         return false;
+      }
+
+      if (obj == this) {
+         return true;
+      }
+
+      if (this.getId() != ((Task) obj).getId()) {
+         return false;
+      }
+
+      return true;
+   }
+
+   }

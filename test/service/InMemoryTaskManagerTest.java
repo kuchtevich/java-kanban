@@ -1,98 +1,88 @@
 package service;
+
 import model.*;
 
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
-    private HistoryManager historyManager;
+
     TaskManager taskManager;
 
-     @Before
-     public void beforeEach(){
-         InMemoryTaskManager historyManager = new HistoryManager();
-         taskManager = new InMemoryTaskManagerTest(historyManager);
-     }
-
+    @BeforeEach
+    public void beforeEach() {
+        taskManager = new InMemoryTaskManager();
+    }
     //проверьте, что экземпляры класса Task равны друг другу, если равен их id;
     @Test
     void shouldBeTheTaskIsEquals() {
         Task task = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW,1);
+                "сменить профессию", Status.NEW, 1);
         Task task2 = new Task("Cоздание новой задачи",
-                "сменить город", Status.IN_PROGRESS,2);
-        assertEquals(task,task2, "Задачи не совпадают.");
-
-
+                "сменить город", Status.IN_PROGRESS, 2);
+        assertEquals(task, task2, "Задачи не совпадают.");
     }
 
-    //проверьте, что наследники класса Task равны друг другу, если равен их id;
-    @Test
-    void shouldBeTheTaskIsEqualsInClassExtends() {
 
-    }
-
-    //проверьте, что объект Epic нельзя добавить в самого себя в виде подзадачи;
-    @Test
-    void shouldBeTheEpicIsNotEqualsEpic() {
-
-    }
-    //проверьте, что объект Subtask нельзя сделать своим же эпиком;
-    @Test
-    void ...(){
-
-    }
-
-    //убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров;
-    @Test
-    void shouldBeTheManagerReturnInitializationAndReadyForWork() {
-
-    }
-
-    //проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
-    @Test
-    void shouldBeTheManagerReturnInitializationAndReadyForWork() {
-
-    }
-    //*проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
-    @Test
-    void shouldBeTaskIdAndGenerateIdEquals() {
-
-    }
-    //создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
-    @Test
-    void shouldBeTaskNotChange() {
-
-    }
-    //убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
+    // убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
     @Test
     void shouldBeHistoryManagerSavePreviousVersion() {
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW);
-        histotyManager.add(task);
-        final List<Task> history = historyManager.getHistory();
+        // arrange // given
+        int taskId = 1, expectedHistorySize = 1;
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
+        taskManager.addNewTask(task);
+
+        // act     // when
+        taskManager.getTask(taskId);
+
+        // assert  // then
+        final List<Task> history = taskManager.getHistory();
         assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+        assertEquals(expectedHistorySize, history.size(), "История не пустая.");
     }
 
-
-
-
-    //Пример
+    // проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
     @Test
-    void addNewTask() {
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.New, 1);
-        final int taskId = taskManager.addNewTask(task);
+    void shouldAddTaskAndGetTaskById() {
+        // arrange
+        int taskId = 1;
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
 
-        final Task savedTask = taskManager.getTask(taskId);
+        // act
+        taskManager.addNewTask(task);
 
-        assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(task, savedTask, "Задачи не совпадают.");
-
-        final List<Task> tasks = taskManager.getTasks();
-
-        assertNotNull(tasks, "Задачи не возвращаются.");
-        assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+        // assert
+        assertEquals(task, taskManager.getTask(taskId));
     }
+
+    @Test
+    void shouldAddSubTaskAndGetSubTaskById() {
+        // arrange
+        int epicId = 33, taskId = 1;
+        Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, epicId, taskId);
+
+        // act
+        taskManager.addNewTask(task);
+
+        // assert
+        assertEquals(task, taskManager.getTask(taskId));
+    }
+
+    @Test
+    void shouldAddEpicAndGetEpicById() {
+        // arrange
+        int epicId = 1;
+        Task task = new Epic("Cоздание новой задачи", "сменить профессию", epicId);
+
+        // act
+        taskManager.addNewTask(task);
+
+        // assert
+        assertEquals(task, taskManager.getTask(epicId));
+    }
+
 }

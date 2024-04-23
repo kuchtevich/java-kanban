@@ -2,12 +2,13 @@ import model.*;
 import service.*;
 
 
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-    TaskManager taskManager = new TaskManager();
+    TaskManager taskManager = Manager.getDefault();
     Task task = taskManager.addNewTask(new Task("Cоздание новой задачи",
             "сменить профессию", Status.NEW,1));
     System.out.println("Создана новая задача: " + task);
@@ -37,7 +38,12 @@ public class Main {
                 "сдать ТЗ", Status.IN_PROGRESS, 7, 4));
     System.out.println("Подзадача " + subTask3);
 
+    SubTask subTask4 = taskManager.addNewSubtask( new SubTask("Создание нового",
+                "ТЗ спринт 5", Status.IN_PROGRESS, 7, 4));
+        System.out.println("Подзадача " + subTask3);
 
+    System.out.println("История добавления информации: " + taskManager.getHistory());
+/*
    System.out.println(taskManager.getAllTasks());
    System.out.println(taskManager.getSubtask(7));
    System.out.println(taskManager.getAllEpics());
@@ -66,6 +72,6 @@ public class Main {
 
   taskManager.deleteEpic(4);
   System.out.println("Удалено. " + taskManager.getEpic(4));
-
+*/
     }
 }

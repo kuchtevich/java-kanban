@@ -42,8 +42,8 @@ public class Main {
                 "ТЗ спринт 5", Status.IN_PROGRESS, 7, 4));
         System.out.println("Подзадача " + subTask3);
 
-    System.out.println("История добавления информации: " + taskManager.getHistory());
-/*
+    //System.out.println("История добавления информации: " + taskManager.getHistory());
+
    System.out.println(taskManager.getAllTasks());
    System.out.println(taskManager.getSubtask(7));
    System.out.println(taskManager.getAllEpics());
@@ -72,6 +72,7 @@ public class Main {
 
   taskManager.deleteEpic(4);
   System.out.println("Удалено. " + taskManager.getEpic(4));
-*/
+
+        System.out.println("История добавления информации: " + taskManager.getHistory());
     }
 }

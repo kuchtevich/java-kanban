@@ -19,7 +19,7 @@ private static final int SIZE= 10; //максимальный размер ис�
         }
     }
     @Override
-    public List<Task> getHistory(){ //что делает не ясно
+    public List<Task> getHistory(){
         return history;
     }
 

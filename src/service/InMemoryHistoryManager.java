@@ -3,7 +3,7 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
     HashMap<Integer, Node> history = new HashMap<>();

@@ -1,7 +1,6 @@
 import model.*;
 import service.*;
 
-
 public class Main {
 
     public static void main(String[] args) {
@@ -40,8 +39,6 @@ public class Main {
     SubTask subTask4 = taskManager.addNewSubtask( new SubTask("Создание нового",
                 "ТЗ спринт 5", Status.IN_PROGRESS, 7, 4));
         System.out.println("Подзадача " + subTask3);
-
-    //System.out.println("История добавления информации: " + taskManager.getHistory());
 
    System.out.println(taskManager.getAllTasks());
    System.out.println(taskManager.getSubtask(7));

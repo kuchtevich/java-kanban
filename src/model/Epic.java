@@ -66,7 +66,6 @@ public class Epic extends Task {
                     newStatusCount++;
                 }
             }
-
             if (newStatusCount == subTasks.size()) {
                 status = Status.NEW;
             } else if (doneStatusCount == subTasks.size()) {

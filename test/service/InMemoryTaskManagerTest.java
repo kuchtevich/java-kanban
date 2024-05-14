@@ -17,13 +17,14 @@ class InMemoryTaskManagerTest {
     public void beforeEach() {
         taskManager = new InMemoryTaskManager();
     }
+
     //проверьте, что экземпляры класса Task равны друг другу, если равен их id;
     @Test
     void shouldBeTheTaskIsEquals() {
-        Task task = new Task("Cоздание новой задачи",
+        Task task = new Task("Cоздание старой задачи",
                 "сменить профессию", Status.NEW, 1);
         Task task2 = new Task("Cоздание новой задачи",
-                "сменить город", Status.IN_PROGRESS, 2);
+                "сменить город", Status.IN_PROGRESS, 1);
         assertEquals(task, task2, "Задачи не совпадают.");
     }
 

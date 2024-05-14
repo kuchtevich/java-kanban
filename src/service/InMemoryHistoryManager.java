@@ -61,12 +61,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null) {
             return;
         }
-
         history.remove(node.item.getId());
-
         Node prev = node.prev;
         Node next = node.next;
-
         if (next == null) {
             prev.next = null;
             last = prev;
@@ -75,7 +72,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 prev.next = next;
             }
         }
-
         if (prev == null) {
             next.prev = null;
             first = next;

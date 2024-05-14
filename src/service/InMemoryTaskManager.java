@@ -25,26 +25,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistory();
+        return historyManager.getHistory()
     }
     @Override
     public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values());
+        return new ArrayList<>(tasks.values())
     }
 
     @Override
     public List<SubTask> getAllSubTasks() {
-        return new ArrayList<>(subTasks.values());
+        return new ArrayList<>(subTasks.values())
     }
 
     @Override
     public List<Epic> getAllEpics() {
-        return new ArrayList<>(epics.values());
+        return new ArrayList<>(epics.values())
     }
 
     @Override
     public void removeAllTask() {
-        tasks.clear();
+        tasks.clear()
     }
 
     @Override

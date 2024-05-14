@@ -1,7 +1,6 @@
 package service;
 
 import model.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, SubTask> subTasks;
     public HashMap<Integer, Epic> epics;
     private int counter = 0;
-    private HistoryManager historyManager = Manager.getDefaultHistory();
+    private final HistoryManager historyManager = Manager.getDefaultHistory();
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -160,13 +159,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epics.containsKey(id)) {
             return;
         }
-
         Epic epic = epics.get(id);
-
         for (SubTask subTask : epic.getSubTasks()) {
             subTasks.remove(subTask.getId());
         }
-
         epics.remove(id);
     }
 
@@ -175,12 +171,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (!subTasks.containsKey(id)) {
             return;
         }
-
         SubTask subTask = subTasks.get(id);
-
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
-
         epic.removeSubTask(subTask);
         subTasks.remove(id);
     }
@@ -190,8 +183,6 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         return epic.getSubTasks();
     }
-
-
 }
 
 

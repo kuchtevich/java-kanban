@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryHistoryManagerTest { //проверить удаление с начала, с конца и середины
 
     @Test
-    void TestRemoveFirst() { //удаление из начала
+    void testRemoveFirst() { //удаление из начала
         // подготовка
         InMemoryHistoryManager manager = new InMemoryHistoryManager();
         Task task1 = new Task("task1", "task1", Status.NEW, 1);
@@ -23,11 +23,11 @@ class InMemoryHistoryManagerTest { //проверить удаление с на
 
         // действие
         manager.remove(task1.getId());
-        assertEquals(manager.getAll(), List.of(task2, task3), "Проверка пройдена.");
+        assertEquals(List.of(task2, task3), manager.getHistory(), "Проверка пройдена.");
     }
 
     @Test
-    void TestRemoveLast() { //удаление из начала
+    void testRemoveLast() { //удаление из начала
         // подготовка
         InMemoryHistoryManager manager = new InMemoryHistoryManager();
         Task task1 = new Task("task1", "task1", Status.NEW, 1);
@@ -39,11 +39,11 @@ class InMemoryHistoryManagerTest { //проверить удаление с на
 
         // действие
         manager.remove(task3.getId());
-        assertEquals(manager.getAll(), List.of(task1, task2), "Проверка пройдена.");
+        assertEquals(List.of(task1, task2), manager.getHistory(), "Проверка пройдена.");
     }
 
     @Test
-    void TestRemoveMiddle() { //удаление из начала
+    void testRemoveMiddle() { //удаление из начала
         // подготовка
         InMemoryHistoryManager manager = new InMemoryHistoryManager();
         Task task1 = new Task("task1", "task1", Status.NEW, 1);
@@ -55,7 +55,7 @@ class InMemoryHistoryManagerTest { //проверить удаление с на
 
         // действие
         manager.remove(task2.getId());
-        assertEquals(manager.getAll(), List.of(task1, task3), "Проверка пройдена.");
+        assertEquals(List.of(task1, task3), manager.getHistory(), "Проверка пройдена.");
     }
 }
 

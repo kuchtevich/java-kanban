@@ -2,19 +2,9 @@ package service;
 import model.Task;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedHashMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    LinkedHashMap map;
-
-    LinkedList list;
-
-//private final List<Task> history =new ArrayList<>(); //лист куда запишем
-//private static final int SIZE= 10; //максимальный размер истории
-
-
     HashMap<Integer, Node> history = new HashMap<>();
     Node first; //нужно знать начало
     Node last; //нужно знать конец
@@ -23,7 +13,20 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         Node node = history.get(task.getId()); //проверяем есть ли такая задача
         removeNode(node); //удаляем ее
-        linkLast(task); // добавляем, чтобы не было дублирования задач
+        linkLast(task);
+    }
+
+    private void linkLast(Task task) {
+        final Node savedLast = last;
+        final Node node = new Node(savedLast, task, null);
+        last = node;
+        if (savedLast == null) {
+            first = node;
+        } else {
+            savedLast.next = node;
+        }
+        // добавляем, чтобы не было дублирования задач
+        history.put(task.getId(), node);
     }
 
     @Override
@@ -37,7 +40,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         ArrayList<Task> list = new ArrayList<>();
         Node current = first; //идем от начала
         while (current != null) {
-            //TODO - деляем какое то действие
             list.add(current.item); //обходим связный список
             current = current.next; //перемещаемся к следующей записи
         }
@@ -45,15 +47,43 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public List<Task> getHistory(){
-        return history;
+    public List<Task> getHistory() {
+        List<Task> list = new ArrayList<>();
+        Node current = first;
+        while (current != null) {
+            list.add(current.item);
+            current = current.next;
+        }
+        return list;
     }
 
     private void removeNode(Node node) { //удаление из связного списка
-        //TODO
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
+        if (node == null) {
+            return;
+        }
+
         history.remove(node.item.getId());
+
+        Node prev = node.prev;
+        Node next = node.next;
+
+        if (next == null) {
+            prev.next = null;
+            last = prev;
+        } else {
+            if (prev != null) {
+                prev.next = next;
+            }
+        }
+
+        if (prev == null) {
+            next.prev = null;
+            first = next;
+        } else {
+            if (next != null) {
+                next.prev = prev;
+            }
+        }
     }
 
     private static class Node {
@@ -61,8 +91,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node next;
         Node prev;
 
-        Node(Node prev, Node elements, Node next) {
-            this.item = elements;
+        Node(Node prev, Task item, Node next) {
+            this.item = item;
             this.prev = prev;
             this.next = next;
         }

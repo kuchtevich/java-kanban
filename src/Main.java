@@ -59,6 +59,8 @@ public class Main {
    taskManager.updateEpic(epic2);
    System.out.println(epic2);
 
+        System.out.println("История добавления информации: " + taskManager.getHistory());
+/*
    taskManager.removeAllTask();
    System.out.println(taskManager.getAllTasks());
 
@@ -71,7 +73,6 @@ public class Main {
 
   taskManager.deleteEpic(4);
   System.out.println("Удалено. " + taskManager.getEpic(4));
-
-        System.out.println("История добавления информации: " + taskManager.getHistory());
+  */
     }
 }

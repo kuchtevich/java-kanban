@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, SubTask> subTasks;
     public HashMap<Integer, Epic> epics;
     private int counter = 0;
-    private final HistoryManager historyManager = Manager.getDefaultHistory();
+    private HistoryManager historyManager = Manager.getDefaultHistory();
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -25,26 +26,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistory()
+        return historyManager.getHistory();
     }
     @Override
     public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values())
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
     public List<SubTask> getAllSubTasks() {
-        return new ArrayList<>(subTasks.values())
+        return new ArrayList<>(subTasks.values());
     }
 
     @Override
     public List<Epic> getAllEpics() {
-        return new ArrayList<>(epics.values())
+        return new ArrayList<>(epics.values());
     }
 
     @Override
     public void removeAllTask() {
-        tasks.clear()
+        tasks.clear();
     }
 
     @Override
@@ -159,10 +160,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (!epics.containsKey(id)) {
             return;
         }
+
         Epic epic = epics.get(id);
+
         for (SubTask subTask : epic.getSubTasks()) {
             subTasks.remove(subTask.getId());
         }
+
         epics.remove(id);
     }
 
@@ -171,9 +175,12 @@ public class InMemoryTaskManager implements TaskManager {
         if (!subTasks.containsKey(id)) {
             return;
         }
+
         SubTask subTask = subTasks.get(id);
+
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
+
         epic.removeSubTask(subTask);
         subTasks.remove(id);
     }

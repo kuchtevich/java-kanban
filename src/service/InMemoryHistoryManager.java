@@ -3,11 +3,13 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class InMemoryHistoryManager implements HistoryManager {
     HashMap<Integer, Node> history = new HashMap<>();
     Node first; //нужно знать начало
     Node last; //нужно знать конец
+
 
     @Override
     public void add(Task task) {

@@ -153,7 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             System.out.println("Ошибка.");
         }
-
+        historyManager.remove(id);
     }
 
     @Override
@@ -166,6 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTasks.remove(subTask.getId());
         }
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -178,6 +179,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         epic.removeSubTask(subTask);
         subTasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -185,6 +187,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
         return epic.getSubTasks();
     }
+
 }
 
 

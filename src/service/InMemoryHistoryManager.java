@@ -20,35 +20,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
     }
 
-    private void linkLast(Task task) {
-        final Node savedLast = last;
-        final Node node = new Node(savedLast, task, null);
-        last = node;
-        if (savedLast == null) {
-            first = node;
-        } else {
-            savedLast.next = node;
-        }
-        // добавляем, чтобы не было дублирования задач
-        history.put(task.getId(), node);
-    }
-
-    @Override
-    public void remove(int id) {
-        Node node = history.get(id);
-        removeNode(node);
-    }
-
-    @Override
-    public List<Task> getAll() {
-        ArrayList<Task> list = new ArrayList<>();
-        Node current = first; //идем от начала
-        while (current != null) {
-            list.add(current.item); //обходим связный список
-            current = current.next; //перемещаемся к следующей записи
-        }
-        return list;
-    }
 
     @Override
     public List<Task> getHistory() {
@@ -68,7 +39,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         history.remove(node.item.getId());
         Node prev = node.prev;
         Node next = node.next;
+
         if (next == null) {
+            if (prev != null) {
+                return;
+            }
             prev.next = null;
             last = prev;
         } else {
@@ -77,6 +52,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
         }
         if (prev == null) {
+            if (prev != null) {
+                return;
+            }
             next.prev = null;
             first = next;
         } else {
@@ -96,5 +74,24 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.prev = prev;
             this.next = next;
         }
+    }
+
+    private void linkLast(Task task) {
+        final Node savedLast = last;
+        final Node node = new Node(savedLast, task, null);
+        last = node;
+        if (savedLast == null) {
+            first = node;
+        } else {
+            savedLast.next = node;
+        }
+        // добавляем, чтобы не было дублирования задач
+        history.put(task.getId(), node);
+    }
+
+    @Override
+    public void remove(int id) {
+        Node node = history.get(id);
+        removeNode(node);
     }
 }

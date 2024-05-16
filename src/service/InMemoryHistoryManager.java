@@ -43,15 +43,17 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (next == null) {
             if (prev != null) {
                 prev.next = null;
-                last = prev;
             }
+            last = prev;
         } else {
             if (prev != null) {
                 prev.next = next;
             }
         }
         if (prev == null) {
-            next.prev = null;
+            if (next != null) {
+                next.prev = null;
+            }
             first = next;
         } else {
             if (next != null) {

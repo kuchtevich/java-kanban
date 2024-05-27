@@ -95,6 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(generateId());
         epics.put(epic.getId(), epic);
         return epic;
+        fileBackedTaskManager.save();
     }
 
     @Override
@@ -106,6 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.addSubTask(subTask);
         }
         return subTask;
+        fileBackedTaskManager.save();
     }
 
     @Override
@@ -116,6 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             tasks.put(task.getId(), task);
         }
+        fileBackedTaskManager.save();
     }
 
     @Override
@@ -141,6 +144,9 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
                 epic.calcStatus();
+                if (savedEpic == null) {
+                    throw new NotFoundException("Не найден эпик: " + epicId);
+                }
             }
         }
     }

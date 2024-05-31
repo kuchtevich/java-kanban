@@ -9,14 +9,14 @@ public class Task {
    public Task(String name, String description, Status status, int id) {
       this.name = name;
       this.description = description;
-      this.status= status;
+      this.status = status;
       this.id = id;
    }
 
    public Task(String name, String description, Status status) {
       this.name = name;
       this.description = description;
-      this.status=status;
+      this.status = status;
    }
 
    public void setName(String name) {
@@ -52,13 +52,14 @@ public class Task {
    }
 
    @Override
-   public String toString(){
-      return "Task{" +"name=' " + name + '\'' +
+   public String toString() {
+      return "Task{" + "name=' " + name + '\'' +
               ", description='" + description + '\'' +
               ", status='" + status + '\'' +
               ", id='" + id +
               '}';
    }
+
    @Override
    public boolean equals(Object obj) {
       if (obj == null) {
@@ -73,11 +74,7 @@ public class Task {
          return true;
       }
 
-      if (this.getId() != ((Task) obj).getId()) {
-         return false;
-      }
-
-      return true;
+       return this.getId() == ((Task) obj).getId();
    }
 
 }

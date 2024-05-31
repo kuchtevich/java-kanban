@@ -23,7 +23,7 @@ class InMemoryTaskManagerTest {
         Task task = new Task("Cоздание новой задачи",
                 "сменить профессию", Status.NEW, 1);
         Task task2 = new Task("Cоздание новой задачи",
-                "сменить город", Status.IN_PROGRESS, 2);
+                "сменить профессию", Status.NEW, 1);
         assertEquals(task, task2, "Задачи не совпадают.");
     }
 

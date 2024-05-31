@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private String filePath = "file.csv";
+    private final String filePath = "file.csv";
 
     public void init() {
         try {
@@ -57,7 +57,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public String toString(Task task) {
         String result;
 
-        result = task.getId() + ", " + task.getName() + ", " + task.getDescription() + ",";
+        result = task.getId() + "," + task.getName() + "," + task.getDescription() + ",";
 
         if (task instanceof SubTask subTask) {
             return result + subTask.getEpicId();
@@ -101,7 +101,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 
-    // override InMemoryTaskManager
     @Override
     public Task addNewTask(Task task) {
         Task result = super.addNewTask(task);

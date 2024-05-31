@@ -1,14 +1,14 @@
 package service;
 
+import java.io.File;
+
 public class Manager {
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
     public static TaskManager getFileManager() {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager();
-        taskManager.init();
-        return taskManager;
+        return FileBackedTaskManager.loadFromFile(new File(".", "file.csv"));
     }
 
     public static HistoryManager getDefaultHistory() {

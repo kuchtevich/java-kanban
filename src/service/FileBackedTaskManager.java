@@ -9,20 +9,21 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final String filePath = "file.csv";
+    private String filePath = "file.csv";
 
-    public void init() {
+    public static FileBackedTaskManager loadFromFile(File file) {
         try {
-            // должен быть цикл по всем строкам в файле
-            // while (true) {
+            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager();
 
-            String fileContent = Files.readString(Path.of(filePath));
+            String fileContent = Files.readString(Path.of(file.getAbsolutePath()));
 
-            Task task = fromString(fileContent);
+            if (!fileContent.isBlank()) {
+                fileBackedTaskManager.initFromString(fileContent);
+            }
 
-            // }
+            return fileBackedTaskManager;
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + filePath, e);
+            throw new ManagerSaveException("Ошибка при сохранении файла: " + file.getAbsolutePath(), e);
         }
 
     }
@@ -33,6 +34,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             writer = new BufferedWriter(new FileWriter(filePath));
 
+            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
+                writer.write(toString(entry.getValue()));
+                writer.newLine();
+            }
+
             for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
                 var s = toString(entry.getValue());
                 writer.write(s);
@@ -40,11 +46,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
             for (Map.Entry<Integer, SubTask> entry : subTasks.entrySet()) {
-                writer.write(toString(entry.getValue()));
-                writer.newLine();
-            }
-
-            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
                 writer.write(toString(entry.getValue()));
                 writer.newLine();
             }
@@ -57,7 +58,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public String toString(Task task) {
         String result;
 
-        result = task.getId() + "," + task.getName() + "," + task.getDescription() + ",";
+        result = task.getId() + ","
+                + task.getClass().getSimpleName().toUpperCase() + ","
+                + task.getName() + ","
+                + task.getStatus() + ","
+                + task.getDescription() + ",";
 
         if (task instanceof SubTask subTask) {
             return result + subTask.getEpicId();
@@ -66,38 +71,44 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return result;
     }
 
-    public Task fromString(String value) {
-        // id,type,name,status,description,epic
-        final String[] columns = value.split(",");
-        //TODO
-        int taskId = Integer.parseInt(columns[0]);
-        TaskType type = TaskType.valueOf(columns[1]);
-        String name = columns[2];
-        Status status = null;
-        String description = columns[4];
-        Integer epicId = null; // columns
-        if (type == TaskType.SUBTASK) {
-            epicId = Integer.parseInt(columns[5]);
-        }
+    public void initFromString(String value) {
+        // TODO: все задачи приходят одной строкой, должен быть цикл по строкам
 
-        Task task;
-        switch (type) {
-            case TASK:
-                task = new Task(name, description, status, taskId);
-                super.addNewTask(task);
-                break;
-            case SUBTASK:
-                task = new SubTask(name, description, status, epicId);
-                super.addNewSubtask((SubTask) task);
-                break;
-            case EPIC:
-                task = new Epic(name, description, taskId);
-                super.addNewEpic((Epic) task);
-                break;
-            default:
-                throw new IllegalArgumentException();
+        final String[] tasks = value.split(System.lineSeparator());
+
+        for (String taskString : tasks) {
+
+            // id,type,name,status,description,epic
+            final String[] columns = taskString.split(",");
+            //TODO
+            int taskId = Integer.parseInt(columns[0]);
+            TaskType type = TaskType.valueOf(columns[1]);
+            String name = columns[2];
+            Status status = Status.valueOf(columns[3]);
+            String description = columns[4];
+            Integer epicId = null; // columns
+            if (type == TaskType.SUBTASK) {
+                epicId = Integer.parseInt(columns[5]);
+            }
+
+            Task task;
+            switch (type) {
+                case TASK:
+                    task = new Task(name, description, status, taskId);
+                    super.addNewTask(task);
+                    break;
+                case SUBTASK:
+                    task = new SubTask(name, description, status, epicId);
+                    super.addNewSubtask((SubTask) task);
+                    break;
+                case EPIC:
+                    task = new Epic(name, description, taskId);
+                    super.addNewEpic((Epic) task);
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
-        return task;
     }
 
 

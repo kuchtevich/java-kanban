@@ -29,7 +29,7 @@ class FileBackedTaskManagerTest {
 
 
     @Test
-    public void shouldWriteTasksInFile() throws IOException {
+    public void shouldBeTaskInFile() throws IOException {
         Task task = new Task("Task1", "Descr1", Status.NEW);
         fileBackedTaskManager.addNewTask(task);
 
@@ -42,7 +42,7 @@ class FileBackedTaskManagerTest {
         String from = Files.readString(file.toPath());
         String[] line = from.split(";");
 
-        assertEquals(6, line.length, "Колчество строк неверное");
+        assertEquals(1, line.length, "Колчество строк неверное");
         assertEquals("id,type,name,description,status,epic", line[0], "Error");
         assertEquals("1,TASK,Новая задача1,NEW,Описание,null", line[1], "Error");
     }

@@ -1,80 +1,88 @@
 package model;
 
 public class Task {
-   protected String name;
-   protected String description;
-   protected int id;
-   protected Status status;
+    protected String name;
+    protected String description;
+    protected int id;
+    protected Status status;
 
-   public Task(String name, String description, Status status, int id) {
-      this.name = name;
-      this.description = description;
-      this.status = status;
-      this.id = id;
-   }
+    public Task(String name, String description, Status status, int id) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.id = id;
+    }
 
-   public Task(String name, String description, Status status) {
-      this.name = name;
-      this.description = description;
-      this.status = status;
-   }
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+    public int getId() {
+        return id;
+    }
 
-   public void setDescription(String description) {
-      this.description = description;
-   }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-   public int getId() {
-      return id;
-   }
+    public String getDescription() {
+        return description;
+    }
 
-   public void setId(int id) {
-      this.id = id;
-   }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-   public String getDescription() {
-      return description;
-   }
+    public String getName() {
+        return name;
+    }
 
-   public String getName() {
-      return name;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public Status getStatus() {
-      return status;
-   }
+    public Status getStatus() {
+        return status;
+    }
 
-   public void setStatus(Status status) {
-      this.status = status;
-   }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-   @Override
-   public String toString() {
-      return "Task{" + "name=' " + name + '\'' +
-              ", description='" + description + '\'' +
-              ", status='" + status + '\'' +
-              ", id='" + id +
-              '}';
-   }
+    public Integer getEpicId() {
+        return null;
+    }
 
-   @Override
-   public boolean equals(Object obj) {
-      if (obj == null) {
-         return false;
-      }
+    @Override
+    public String toString() {
+        return "Task{" + "name=' " + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", id='" + id +
+                '}';
+    }
 
-      if (!(obj instanceof Task)) {
-         return false;
-      }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-      if (obj == this) {
-         return true;
-      }
+        if (!(obj instanceof Task)) {
+            return false;
+        }
 
-       return this.getId() == ((Task) obj).getId();
-   }
+        if (obj == this) {
+            return true;
+        }
+
+        if (this.getId() != ((Task) obj).getId()) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

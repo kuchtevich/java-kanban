@@ -7,10 +7,6 @@ public class Manager {
         return new InMemoryTaskManager();
     }
 
-    public static TaskManager getFileManager() {
-        return FileBackedTaskManager.loadFromFile(new File(".", "file.csv"));
-    }
-
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }

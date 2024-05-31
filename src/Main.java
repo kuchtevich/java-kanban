@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-        TaskManager taskManager = Manager.getFileManager();
+        TaskManager taskManager = Manager.getDefault();
 
 
         Task task = taskManager.addNewTask(new Task("Cоздание новой задачи",

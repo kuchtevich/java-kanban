@@ -42,6 +42,11 @@ public class Epic extends Task {
         calcStatus();
     }
 
+    @Override
+    public Integer getEpicId() {
+        return super.getEpicId();
+    }
+
 
     @Override
     public String toString() {

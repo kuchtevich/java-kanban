@@ -24,7 +24,7 @@ class FileBackedTaskManagerTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         file = File.createTempFile("file", "csv");
-        fileBackedTaskManager = new FileBackedTaskManager();
+        fileBackedTaskManager = new FileBackedTaskManager(file);
     }
 
 

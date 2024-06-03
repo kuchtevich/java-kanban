@@ -9,11 +9,15 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private String filePath = "file.csv";
+    private final File file;
+
+    public FileBackedTaskManager(File file) {
+        this.file = file;
+    }
 
     public static FileBackedTaskManager loadFromFile(File file) {
         try {
-            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager();
+            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
             String fileContent = Files.readString(Path.of(file.getAbsolutePath()));
 
@@ -28,12 +32,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     }
 
-    public void save() {
+    private void save() {
         final BufferedWriter writer;
+        int countId = 1;
 
         try {
-            writer = new BufferedWriter(new FileWriter(filePath));
-
+            writer = new BufferedWriter(new FileWriter(file));
+            String header = "Let's go!";
+            for (int i : tasks.keySet()) {
+                if (countId < i) {
+                    countId = i;
+                }
+            }
+            for (int i : epics.keySet()) {
+                if (countId < i) {
+                    countId = i;
+                }
+            }
+            for (SubTask subTask : subTasks.values()) {
+                Epic epic = epics.get(subTask.getEpicId());
+                int id = subTask.getId();
+                if (countId < id) {
+                    countId = id;
+                }
+            }
             for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
                 writer.write(toString(entry.getValue()));
                 writer.newLine();
@@ -51,7 +73,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             writer.close();
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + filePath, e);
+            throw new ManagerSaveException("Ошибка при сохранении файла: " + file, e);
         }
     }
 
@@ -64,31 +86,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 + task.getStatus() + ","
                 + task.getDescription() + ",";
 
-        if (task instanceof SubTask subTask) {
-            return result + subTask.getEpicId();
+        if (task instanceof SubTask) {
+            return result + task.getEpicId();
         }
 
         return result;
     }
 
-    public void initFromString(String value) {
-        // TODO: все задачи приходят одной строкой, должен быть цикл по строкам
+    private void initFromString(String value) {
 
         final String[] tasks = value.split(System.lineSeparator());
 
         for (String taskString : tasks) {
 
-            // id,type,name,status,description,epic
             final String[] columns = taskString.split(",");
-            //TODO
-            int taskId = Integer.parseInt(columns[0]);
-            TaskType type = TaskType.valueOf(columns[1]);
-            String name = columns[2];
-            Status status = Status.valueOf(columns[3]);
-            String description = columns[4];
+            int taskId = Integer.parseInt(columns[1]);
+            TaskType type = TaskType.valueOf(columns[2]);
+            String name = columns[3];
+            Status status = Status.valueOf(columns[4]);
+            String description = columns[5];
             Integer epicId = null; // columns
             if (type == TaskType.SUBTASK) {
-                epicId = Integer.parseInt(columns[5]);
+                epicId = Integer.parseInt(columns[6]);
             }
 
             Task task;

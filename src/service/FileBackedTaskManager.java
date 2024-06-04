@@ -34,28 +34,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         final BufferedWriter writer;
-        int countId = 1;
 
         try {
             writer = new BufferedWriter(new FileWriter(file));
-            String header = "Let's go!";
-            for (int i : tasks.keySet()) {
-                if (countId < i) {
-                    countId = i;
-                }
-            }
-            for (int i : epics.keySet()) {
-                if (countId < i) {
-                    countId = i;
-                }
-            }
-            for (SubTask subTask : subTasks.values()) {
-                Epic epic = epics.get(subTask.getEpicId());
-                int id = subTask.getId();
-                if (countId < id) {
-                    countId = id;
-                }
-            }
+            writer.write("id,type,name,status,description,epic" + "\n");
             for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
                 writer.write(toString(entry.getValue()));
                 writer.newLine();
@@ -77,7 +59,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public String toString(Task task) {
+    private String toString(Task task) {
         String result;
 
         result = task.getId() + ","
@@ -96,39 +78,50 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void initFromString(String value) {
 
         final String[] tasks = value.split(System.lineSeparator());
+        int countId = 1;
 
-        for (String taskString : tasks) {
+        for (String taskString : tasks) { //нужно перешагнуть первую строку
 
             final String[] columns = taskString.split(",");
-            int taskId = Integer.parseInt(columns[1]);
-            TaskType type = TaskType.valueOf(columns[2]);
-            String name = columns[3];
-            Status status = Status.valueOf(columns[4]);
-            String description = columns[5];
-            Integer epicId = null; // columns
-            if (type == TaskType.SUBTASK) {
-                epicId = Integer.parseInt(columns[6]);
-            }
+            if (columns.length > 1) {
+                for (int i = 0; i < columns.length; i++) {
+                    if (i == 0) {
+                        continue;
+                    }
+                    int taskId = Integer.parseInt(columns[1]);
+                    TaskType type = TaskType.valueOf(columns[2]);
+                    String name = columns[3];
+                    Status status = Status.valueOf(columns[4]);
+                    String description = columns[5];
+                    Integer epicId = null;
+                    if (type == TaskType.SUBTASK) {
+                        epicId = Integer.parseInt(columns[6]);
+                    }
 
-            Task task;
-            switch (type) {
-                case TASK:
-                    task = new Task(name, description, status, taskId);
-                    super.addNewTask(task);
-                    break;
-                case SUBTASK:
-                    task = new SubTask(name, description, status, epicId);
-                    super.addNewSubtask((SubTask) task);
-                    break;
-                case EPIC:
-                    task = new Epic(name, description, taskId);
-                    super.addNewEpic((Epic) task);
-                    break;
-                default:
-                    throw new IllegalArgumentException();
+                    Task task;
+                    switch (type) {
+                        case TASK:
+                            task = new Task(name, description, status, taskId);
+                            super.addNewTask(task);
+                            break;
+                        case SUBTASK:
+                            task = new SubTask(name, description, status, epicId);
+                            super.addNewSubtask((SubTask) task);
+                            break;
+                        case EPIC:
+                            task = new Epic(name, description, taskId);
+                            super.addNewEpic((Epic) task);
+                            break;
+                        default:
+                            throw new IllegalArgumentException();
+                    }
+                }
             }
         }
     }
+    //остался без внимания один важный момент. Нужно актуализировать счетчик counter в классе InMemoryTaskManager,
+    // поскольку сейчас вновь созданные задачи будут перетирать вычитанные из файла.
+    // Для этого нужно найти самое большое значение id у задач из файла и засетить это значение в counter.
 
 
     @Override

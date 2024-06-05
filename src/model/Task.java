@@ -1,5 +1,7 @@
 package model;
 
+import service.TaskType;
+
 public class Task {
     protected String name;
     protected String description;
@@ -17,6 +19,10 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     public int getId() {
@@ -78,11 +84,7 @@ public class Task {
             return true;
         }
 
-        if (this.getId() != ((Task) obj).getId()) {
-            return false;
-        }
-
-        return true;
+        return this.getId() == ((Task) obj).getId();
     }
 
 }

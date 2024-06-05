@@ -4,9 +4,11 @@ import exception.ManagerSaveException;
 import model.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -16,112 +18,84 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        try {
-            FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+        FileBackedTaskManager fileBackedTaskManager = Manager.getDefaultFileBackedTaskManager();
+        try (var bufferedReader = new BufferedReader(new FileReader(file))) {
+            int maxId = 0;
+            Task task;
+            String fileText;
+            while ((fileText = bufferedReader.readLine()) != null) {
+                if (!fileText.isEmpty()) {
+                    task = initFromString(fileText);
+                    if (task != null) {
+                        if (task.getId() > maxId) {
+                            maxId = task.getId();
+                        }
 
-            String fileContent = Files.readString(Path.of(file.getAbsolutePath()));
-
-            if (!fileContent.isBlank()) {
-                fileBackedTaskManager.initFromString(fileContent);
+                        switch (task.getType()) {
+                            case TASK -> fileBackedTaskManager.tasks.put(task.getId(), task);
+                            case EPIC -> fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
+                            case SUBTASK -> {
+                                fileBackedTaskManager.subTasks.put(task.getId(), (SubTask) task);
+                                Epic epic = fileBackedTaskManager.epics.get(task.getEpicId());
+                                epic.addSubTask((SubTask) task);
+                            }
+                        }
+                    }
+                }
             }
-
-            return fileBackedTaskManager;
+            fileBackedTaskManager.counter = maxId;
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + file.getAbsolutePath(), e);
+            throw new ManagerSaveException("Произошла ошибка при чтении файла");
         }
+        return fileBackedTaskManager;
+    }
 
+    protected static Task initFromString(String value) {
+        String[] values = value.split("\n");
+        for (String taskString : values) { //нужно перешагнуть первую строку
+            String[] columns = taskString.split(",");
+            String name = columns[0];
+            String description = columns[1];
+            Status status = Status.valueOf(columns[2]);
+            int taskId = Integer.parseInt(columns[3]);
+            TaskType type = TaskType.valueOf(columns[5]);
+            Task task = switch (type) {
+                case TASK -> new Task(name, description, status, taskId);
+                case SUBTASK -> new SubTask(name, description, status, taskId, Integer.parseInt(columns[4]));
+                case EPIC -> new Epic(name, description, taskId);
+            };
+            return task;
+        }
+        return null;
     }
 
     private void save() {
-        final BufferedWriter writer;
-
-        try {
-            writer = new BufferedWriter(new FileWriter(file));
-            writer.write("id,type,name,status,description,epic" + "\n");
-            for (Map.Entry<Integer, Epic> entry : epics.entrySet()) {
-                writer.write(toString(entry.getValue()));
-                writer.newLine();
+        List<Task> allTasks = new ArrayList<>();
+        allTasks.addAll(getAllTasks());
+        allTasks.addAll(getAllEpics());
+        allTasks.addAll(getAllSubTasks());
+        try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+            for (Task task : allTasks) {
+                fileWriter.write(toString(task) + "\n");
             }
-
-            for (Map.Entry<Integer, Task> entry : tasks.entrySet()) {
-                var s = toString(entry.getValue());
-                writer.write(s);
-                writer.newLine();
-            }
-
-            for (Map.Entry<Integer, SubTask> entry : subTasks.entrySet()) {
-                writer.write(toString(entry.getValue()));
-                writer.newLine();
-            }
-            writer.close();
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении файла: " + file, e);
+            throw new ManagerSaveException("Сохранение файла прошло не удачно");
         }
     }
 
     private String toString(Task task) {
         String result;
 
-        result = task.getId() + ","
-                + task.getClass().getSimpleName().toUpperCase() + ","
-                + task.getName() + ","
-                + task.getStatus() + ","
-                + task.getDescription() + ",";
-
-        if (task instanceof SubTask) {
-            return result + task.getEpicId();
-        }
+        result =
+                task.getName() + ","
+                        + task.getDescription() + ","
+                        + task.getStatus() + ","
+                        + task.getId() + ","
+                        + task.getEpicId() + ","
+                        + task.getType() + ",";
 
         return result;
     }
-
-    private void initFromString(String value) {
-
-        final String[] tasks = value.split(System.lineSeparator());
-        int countId = 1;
-
-        for (String taskString : tasks) { //нужно перешагнуть первую строку
-
-            final String[] columns = taskString.split(",");
-            if (columns.length > 1) {
-                for (int i = 0; i < columns.length; i++) {
-                    if (i == 0) {
-                        continue;
-                    }
-                    int taskId = Integer.parseInt(columns[1]);
-                    TaskType type = TaskType.valueOf(columns[2]);
-                    String name = columns[3];
-                    Status status = Status.valueOf(columns[4]);
-                    String description = columns[5];
-                    Integer epicId = null;
-                    if (type == TaskType.SUBTASK) {
-                        epicId = Integer.parseInt(columns[6]);
-                    }
-
-                    Task task;
-                    switch (type) {
-                        case TASK:
-                            task = new Task(name, description, status, taskId);
-                            super.addNewTask(task);
-                            break;
-                        case SUBTASK:
-                            task = new SubTask(name, description, status, epicId);
-                            super.addNewSubtask((SubTask) task);
-                            break;
-                        case EPIC:
-                            task = new Epic(name, description, taskId);
-                            super.addNewEpic((Epic) task);
-                            break;
-                        default:
-                            throw new IllegalArgumentException();
-                    }
-                }
-            }
-        }
-    }
-    //остался без внимания один важный момент. Нужно актуализировать счетчик counter в классе InMemoryTaskManager,
-    // поскольку сейчас вновь созданные задачи будут перетирать вычитанные из файла.
-    // Для этого нужно найти самое большое значение id у задач из файла и засетить это значение в counter.
 
 
     @Override

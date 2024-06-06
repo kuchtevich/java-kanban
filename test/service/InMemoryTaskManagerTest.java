@@ -63,7 +63,7 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldAddSubTaskAndGetSubTaskById() {
         // arrange
-        int taskId = 33, eoicId = 1;
+        int taskId = 1, eoicId = 33;
         Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
 
         // act

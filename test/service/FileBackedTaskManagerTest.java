@@ -35,7 +35,6 @@ class FileBackedTaskManagerTest {
     @Test
     public void shouldBeGetInformationInFile() throws IOException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(saveFile);
-        FileBackedTaskManager fileBackedTaskManager1 = Manager.getDefaultFileBackedTaskManager();
         Task task = new Task("Cоздание новой задачи",
                 "сменить профессию", Status.NEW);
         Epic epic = new Epic("Создание нового эпика", "учеба");

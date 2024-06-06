@@ -5,6 +5,8 @@ import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +23,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             int maxId = 0;
             Task task;
             String fileText;
+            List<String> linesInFile = new ArrayList<>();
             while ((fileText = bufferedReader.readLine()) != null) {
                 if (!fileText.isEmpty()) {
-                    task = initFromString(fileText);
-                    if (task != null) {
+                    linesInFile.add(fileText);
+                    for (int i = 1; i < linesInFile.size(); i++) {
+                        task = initFromString(linesInFile.get(i));
                         if (task.getId() > maxId) {
                             maxId = task.getId();
                         }
-
                         switch (task.getType()) {
                             case TASK -> fileBackedTaskManager.tasks.put(task.getId(), task);
                             case EPIC -> fileBackedTaskManager.epics.put(task.getId(), (Epic) task);
@@ -39,6 +42,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             }
                         }
                     }
+
                 }
             }
             fileBackedTaskManager.counter = maxId;
@@ -49,20 +53,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     protected static Task initFromString(String value) {
-        String[] values = value.split("\n");
-        for (String taskString : values) { //нужно перешагнуть первую строку
-            String[] columns = taskString.split(",");
-            String name = columns[0];
-            String description = columns[1];
-            Status status = Status.valueOf(columns[2]);
-            int taskId = Integer.parseInt(columns[3]);
-            TaskType type = TaskType.valueOf(columns[5]);
-            Task task = switch (type) {
-                case TASK -> new Task(name, description, status, taskId);
-                case SUBTASK -> new SubTask(name, description, status, taskId, Integer.parseInt(columns[4]));
-                case EPIC -> new Epic(name, description, taskId);
-            };
-            return task;
+        String[] columns = value.split(",");
+        int taskId = Integer.parseInt(columns[0]);
+        String name = columns[1];
+        String description = columns[2];
+        Status status = Status.valueOf(columns[3]);
+        TaskType type = TaskType.valueOf(columns[5]);
+
+        switch (type) {
+            case TASK:
+                return new Task(taskId, name, description, status);
+            case SUBTASK:
+                return new SubTask(taskId, name, description, status, Integer.parseInt(columns[4]));
+            case EPIC:
+                return new Epic(taskId, name, description);
         }
         return null;
     }
@@ -73,6 +77,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allTasks.addAll(getAllEpics());
         allTasks.addAll(getAllSubTasks());
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
+            fileWriter.write("id,name,description,status,epic,type" + "\n");
             for (Task task : allTasks) {
                 fileWriter.write(toString(task) + "\n");
             }
@@ -85,10 +90,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String result;
 
         result =
-                task.getName() + ","
+                task.getId() + ","
+                        + task.getName() + ","
                         + task.getDescription() + ","
                         + task.getStatus() + ","
-                        + task.getId() + ","
                         + task.getEpicId() + ","
                         + task.getType() + ",";
 

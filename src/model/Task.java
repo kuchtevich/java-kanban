@@ -1,18 +1,16 @@
 package model;
 
-import service.TaskType;
-
 public class Task {
     protected String name;
     protected String description;
     protected int id;
     protected Status status;
 
-    public Task(String name, String description, Status status, int id) {
+    public Task(int id, String name, String description, Status status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
-        this.id = id;
     }
 
     public Task(String name, String description, Status status) {
@@ -84,7 +82,11 @@ public class Task {
             return true;
         }
 
-        return this.getId() == ((Task) obj).getId();
+        if (this.getId() != ((Task) obj).getId()) {
+            return false;
+        }
+
+        return true;
     }
 
 }

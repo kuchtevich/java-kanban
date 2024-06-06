@@ -13,8 +13,8 @@ class EpicTest {
     @Test
     @DisplayName("Должен совпадать со своей копией")
     void shouldEqualsWithCopy() {
-        Epic epic = new Epic("Создание нового эпика", "учеба", 3);
-        Epic epicExpected = new Epic("Создание нового эпика", "учеба", 3);
+        Epic epic = new Epic("Создание нового эпика", "учеба");
+        Epic epicExpected = new Epic("Создание нового эпика", "учеба");
         assertEquals(epicExpected, epic, "Должны быть идентичны");
         assertEqualsTask(epicExpected, epic, "Должны быть идентичны");
     }

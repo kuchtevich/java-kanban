@@ -17,13 +17,14 @@ class InMemoryTaskManagerTest {
     public void beforeEach() {
         taskManager = new InMemoryTaskManager();
     }
+
     //проверьте, что экземпляры класса Task равны друг другу, если равен их id;
     @Test
     void shouldBeTheTaskIsEquals() {
         Task task = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW, 1);
+                "сменить профессию", Status.NEW);
         Task task2 = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW, 1);
+                "сменить профессию", Status.NEW);
         assertEquals(task, task2, "Задачи не совпадают.");
     }
 
@@ -33,7 +34,7 @@ class InMemoryTaskManagerTest {
     void shouldBeHistoryManagerSavePreviousVersion() {
         // arrange // given
         int taskId = 1, expectedHistorySize = 1;
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW);
         taskManager.addNewTask(task);
 
         // act     // when
@@ -50,7 +51,7 @@ class InMemoryTaskManagerTest {
     void shouldAddTaskAndGetTaskById() {
         // arrange
         int taskId = 1;
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW);
 
         // act
         taskManager.addNewTask(task);
@@ -63,7 +64,7 @@ class InMemoryTaskManagerTest {
     void shouldAddSubTaskAndGetSubTaskById() {
         // arrange
         int taskId = 33, eoicId = 1;
-        Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId, taskId);
+        Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
 
         // act
         taskManager.addNewTask(task);
@@ -76,7 +77,7 @@ class InMemoryTaskManagerTest {
     void shouldAddEpicAndGetEpicById() {
         // arrange
         int epicId = 1;
-        Task task = new Epic("Cоздание новой задачи", "сменить профессию", epicId);
+        Task task = new Epic("Cоздание новой задачи", "сменить профессию");
 
         // act
         taskManager.addNewTask(task);

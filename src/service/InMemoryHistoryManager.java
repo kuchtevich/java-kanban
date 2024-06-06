@@ -9,21 +9,20 @@ import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
     HashMap<Integer, Node> history = new HashMap<>();
-    Node first; //нужно знать начало
-    Node last; //нужно знать конец
+    Node first;
+    Node last;
 
 
     @Override
     public void add(Task task) {
         if (task != null) {
-            Node node = history.get(task.getId()); //проверяем есть ли такая задача
-            removeNode(node); //удаляем ее
+            Node node = history.get(task.getId());
+            removeNode(node);
             linkLast(task);
         }
     }
 
 
-    //@Override
     public List<Task> getHistory() {
         List<Task> list = new ArrayList<>();
         Node current = first;
@@ -34,7 +33,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return list;
     }
 
-    private void removeNode(Node node) { //удаление из связного списка
+    private void removeNode(Node node) {
         if (node == null) {
             return;
         }
@@ -73,11 +72,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             savedLast.next = node;
         }
-        // добавляем, чтобы не было дублирования задач
         history.put(task.getId(), node);
     }
 
-    //@Override
     public void remove(int id) {
         Node node = history.get(id);
         removeNode(node);

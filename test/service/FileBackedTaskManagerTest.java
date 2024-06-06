@@ -19,7 +19,7 @@ class FileBackedTaskManagerTest {
 
     @BeforeEach
     public void beforeEach() throws IOException {
-        saveFile = File.createTempFile("file", ".csv", new File("/Users/dvkuchtevich/java-kanban/resourse"));
+        saveFile = File.createTempFile("file", ".csv", new File("/Users/dvkuchtevich/java-kanban"));
     }
 
     @AfterEach

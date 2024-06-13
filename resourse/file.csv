@@ -1,0 +1,4 @@
+id,name,description,status,epic,type
+1,Cоздание новой задачи,сменить профессию,NEW,null,TASK,
+2,Создание нового эпика,учеба,IN_PROGRESS,null,EPIC,
+1,Создание новой подзадачи,учеба,IN_PROGRESS,2,SUBTASK,

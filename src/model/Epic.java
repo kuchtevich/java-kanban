@@ -1,17 +1,26 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Epic extends Task {
+    private final static LocalDateTime defaultStartTime = LocalDateTime.of(1970, 1, 1, 0, 0);
+    ;
+
     private final List<SubTask> subTasks = new ArrayList<>();
 
+    private LocalDateTime endTime;
+
     public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+        super(name, description, Status.NEW, defaultStartTime, Duration.ZERO);
     }
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, Status.NEW);
+        super(id, name, description, Status.NEW, defaultStartTime, Duration.ZERO);
     }
 
     public List<SubTask> getSubTasks() {
@@ -34,17 +43,17 @@ public class Epic extends Task {
 
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
-        calcStatus();
+        calculateAllFields();
     }
 
     public void removeSubTask(SubTask subTask) {
         subTasks.remove(subTask);
-        calcStatus();
+        calculateAllFields();
     }
 
     public void removeAllSubtasks() {
         subTasks.clear();
-        calcStatus();
+        calculateAllFields();
     }
 
     @Override
@@ -60,6 +69,58 @@ public class Epic extends Task {
                 ", status='" + status + '\'' +
                 ", id='" + id +
                 '}';
+    }
+
+    public void calculateAllFields() {
+        calcStatus();
+        calculateStartTime();
+        calculateDuration();
+        calculateEndTime();
+    }
+
+    public void calculateDuration() {
+        Duration result = Duration.ZERO;
+
+        for (SubTask subTask : subTasks) {
+            result = result.plus(subTask.getDuration());
+        }
+
+        duration = result;
+    }
+
+    public void calculateStartTime() {
+        // search min startTime
+        LocalDateTime result = defaultStartTime;
+
+        if (!subTasks.isEmpty()) {
+            result = subTasks.getFirst().getStartTime();
+        }
+
+        for (SubTask subTask : subTasks) {
+            if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
+                result = subTask.getStartTime();
+        }
+
+        startTime = result;
+    }
+
+    public void calculateEndTime() {
+        LocalDateTime result = defaultStartTime;
+
+        if (!subTasks.isEmpty()) {
+            result = subTasks.getFirst().getEndTime();
+        }
+
+        for (SubTask subTask : subTasks) {
+            if (result.toEpochSecond(ZoneOffset.UTC) < subTask.getEndTime().toEpochSecond(ZoneOffset.UTC))
+                result = subTask.getEndTime();
+        }
+
+        endTime = result;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     public void calcStatus() {

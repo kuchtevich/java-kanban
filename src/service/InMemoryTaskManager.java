@@ -145,7 +145,7 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
-                epic.calcStatus();
+                epic.calculateAllFields();
             }
         }
     }

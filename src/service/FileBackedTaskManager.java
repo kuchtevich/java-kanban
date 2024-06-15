@@ -5,6 +5,8 @@ import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileBackedTaskManager = Manager.getDefaultFileBackedTaskManager();
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         try (var bufferedReader = new BufferedReader(new FileReader(file))) {
             int maxId = 0;
             Task task;
@@ -57,12 +59,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String description = columns[2];
         Status status = Status.valueOf(columns[3]);
         TaskType type = TaskType.valueOf(columns[5]);
+        LocalDateTime startTime = LocalDateTime.parse(columns[6]);
+        Duration duration = Duration.ofMinutes(Long.parseLong(columns[7]));
 
         switch (type) {
             case TASK:
-                return new Task(taskId, name, description, status);
+                return new Task(taskId, name, description, status, startTime, duration);
             case SUBTASK:
-                return new SubTask(taskId, name, description, status, Integer.parseInt(columns[4]));
+                return new SubTask(taskId, name, description, status, startTime, duration, Integer.parseInt(columns[4]));
             case EPIC:
                 return new Epic(taskId, name, description);
         }
@@ -93,7 +97,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         + task.getDescription() + ","
                         + task.getStatus() + ","
                         + task.getEpicId() + ","
-                        + task.getType() + ",";
+                        + task.getType() + ","
+                        + task.getStartTime() + ","
+                        + task.getDuration().toMinutes() + ",";
 
         return result;
     }

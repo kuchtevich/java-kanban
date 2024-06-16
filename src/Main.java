@@ -22,6 +22,7 @@ public class Main {
                 "сменить город", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200)));
         System.out.println("Создана новая задача: " + task2);
 
+
         Epic epic = taskManager.addNewEpic(new Epic("Создание нового эпика", "учеба"));
         System.out.println("Новый эпик создан: " + epic);
 

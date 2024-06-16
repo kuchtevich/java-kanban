@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Epic extends Task {
     private final static LocalDateTime defaultStartTime = LocalDateTime.of(1970, 1, 1, 0, 0);
-    ;
 
     private final List<SubTask> subTasks = new ArrayList<>();
 

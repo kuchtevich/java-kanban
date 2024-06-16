@@ -79,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allTasks.addAll(getAllEpics());
         allTasks.addAll(getAllSubTasks());
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write("id,name,description,status,epic,type" + "\n");
+            fileWriter.write("id,name,description,status,epic,type, startTime, duration," + "\n");
             for (Task task : allTasks) {
                 fileWriter.write(toString(task) + "\n");
             }

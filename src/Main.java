@@ -13,9 +13,7 @@ public class Main {
         TaskManager taskManager = Manager.getDefault();
 
         Task task = taskManager.addNewTask(new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12,
-                12, 12),
-                Duration.ofMinutes(600000)));
+                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000)));
 
         System.out.println("Создана новая задача: " + task);
 
@@ -32,25 +30,23 @@ public class Main {
         System.out.println("Новый эпик создан: " + epic2);
 
         SubTask subTask = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, LocalDateTime.of(2025, 01, 25,
-                15, 45), Duration.ofMinutes(1000), 3));
+                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 3));
         System.out.println("Подзадача " + subTask);
 
         SubTask subTask2 = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(84758), 3));
+                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 3));
         System.out.println("Подзадача " + subTask2);
+//
+//
+//        SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
+//                "сдать ТЗ", Status.IN_PROGRESS, 4));
+//        System.out.println("Подзадача " + subTask3);
+//
+//        SubTask subTask4 = taskManager.addNewSubtask(new SubTask("Создание нового",
+//                "ТЗ спринт 5", Status.IN_PROGRESS, 4));
+//        System.out.println("Подзадача " + subTask3);
 
-
-        SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
-                "сдать ТЗ", Status.IN_PROGRESS, LocalDateTime.of(2024, 06, 16,
-                00, 04), Duration.ofMinutes(1000), 4));
-        System.out.println("Подзадача " + subTask3);
-
-        SubTask subTask4 = taskManager.addNewSubtask(new SubTask("Создание нового",
-                "ТЗ спринт 5", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(2543), 4));
-        System.out.println("Подзадача " + subTask3);
-
-        System.out.println("История добавления информации: " + taskManager.getHistory());
+        //System.out.println("История добавления информации: " + taskManager.getHistory());
 
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getSubtask(7));
@@ -65,8 +61,8 @@ public class Main {
         System.out.println(taskManager.getAllEpicSubtasks(4));
 
         // subTask3.setStatus(Status.DONE);
-        taskManager.updateEpic(epic2);
-        System.out.println(epic2);
+        //taskManager.updateEpic(epic2);
+        //System.out.println(epic2);
 
 //        taskManager.removeAllTask();
 //        System.out.println(taskManager.getAllTasks());

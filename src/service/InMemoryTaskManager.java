@@ -5,6 +5,7 @@ import model.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -13,6 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> epics;
     protected int counter = 0;
     private final HistoryManager historyManager = Manager.getDefaultHistory();
+    TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
@@ -197,6 +199,45 @@ public class InMemoryTaskManager implements TaskManager {
             return new ArrayList<>();
         }
         return epic.getSubTasks();
+    }
+
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        tasks.values().stream()
+                .filter(task -> task.getStartTime() != null)
+                .forEach(prioritizedTasks::add);
+
+        subTasks.values().stream()
+                .filter(subTask -> subTask.getStartTime() != null)
+                .forEach(prioritizedTasks::add);
+        return prioritizedTasks;
+    }
+
+    protected void setStartTimeEpic(Epic epic) {
+        Optional<LocalDateTime> optional = epic.getIdSubTasks().stream()
+                .map(subTasks::get)
+                .map(Task::getStartTime)
+                .min(LocalDateTime::compareTo);
+
+        optional.ifPresent(epic::setStartTime);
+    }
+
+    protected void setEndTimeEpic(Epic epic) {
+        Optional<LocalDateTime> optional = epic.getIdSubTasks().stream()
+                .map(subTasks::get)
+                .map(Task::getEndTime)
+                .max(LocalDateTime::compareTo);
+
+        optional.ifPresent(epic::setEndTimeEpic);
+    }
+
+    protected void setDuration(Epic epic) {
+        if (epic.getIdSubTasks().size() == 0) {
+            epic.setDurationEpic(null);
+        } else {
+            Duration duration = Duration.between(epic.getStartTime(), epic.getEndTimeEpic());
+            epic.setDurationEpic(duration);
+        }
     }
 
 

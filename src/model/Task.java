@@ -28,6 +28,19 @@ public class Task {
         this.duration = duration;
     }
 
+    public Task(int id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     public TaskType getType() {
         return TaskType.TASK;
     }
@@ -85,6 +98,9 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
+        if (startTime = 0) {
+            return;
+        }
         return startTime.plusMinutes(duration.toMinutes());
     }
 
@@ -111,11 +127,7 @@ public class Task {
             return true;
         }
 
-        if (this.getId() != ((Task) obj).getId()) {
-            return false;
-        }
-
-        return true;
+        return this.getId() == ((Task) obj).getId();
     }
 
 }

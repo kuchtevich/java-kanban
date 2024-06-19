@@ -7,19 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private static final LocalDateTime defaultStartTime = LocalDateTime.of(2000,
-            12, 12, 12, 12);
 
     private final List<SubTask> subTasks = new ArrayList<>();
 
     private LocalDateTime endTime;
 
     public Epic(String name, String description) {
-        super(name, description, Status.NEW, defaultStartTime, Duration.ZERO);
+        super(name, description, Status.NEW);
     }
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, Status.NEW, defaultStartTime, Duration.ZERO);
+        super(id, name, description, Status.NEW);
     }
 
     public List<SubTask> getSubTasks() {
@@ -83,13 +81,16 @@ public class Epic extends Task {
         for (SubTask subTask : subTasks) {
             result = result.plus(subTask.getDuration());
         }
-
-        duration = result;
+        if (result != Duration.ZERO) {
+            duration = result;
+        } else {
+            duration = null;
+        }
     }
 
     public void calculateStartTime() {
         // search min startTime
-        LocalDateTime result = defaultStartTime;
+        LocalDateTime result = LocalDateTime.MAX;
 
         if (!subTasks.isEmpty()) {
             result = subTasks.getFirst().getStartTime();
@@ -99,16 +100,15 @@ public class Epic extends Task {
             if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
                 result = subTask.getStartTime();
         }
-
-        startTime = result;
+        if (resuly != Duration.ZERO) {
+            startTime = result;
+        } else {
+            startTime = null;
+        }
     }
 
     public void calculateEndTime() {
-        LocalDateTime result = defaultStartTime;
-
-        if (!subTasks.isEmpty()) {
-            result = subTasks.getFirst().getEndTime();
-        }
+        LocalDateTime result = LocalDateTime.MAX;
 
         for (SubTask subTask : subTasks) {
             if (result.toEpochSecond(ZoneOffset.UTC) < subTask.getEndTime().toEpochSecond(ZoneOffset.UTC))

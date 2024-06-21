@@ -77,14 +77,11 @@ public class Epic extends Task {
 
     public void calculateDuration() {
         Duration result = Duration.ZERO;
-
+        if (subTasks.isEmpty()) {
+            duration = null;
+        }
         for (SubTask subTask : subTasks) {
             result = result.plus(subTask.getDuration());
-        }
-        if (result != Duration.ZERO) {
-            duration = result;
-        } else {
-            duration = null;
         }
     }
 
@@ -92,24 +89,21 @@ public class Epic extends Task {
         // search min startTime
         LocalDateTime result = LocalDateTime.MAX;
 
-        if (!subTasks.isEmpty()) {
-            result = subTasks.getFirst().getStartTime();
+        if (subTasks.isEmpty()) {
+            startTime = null;
         }
-
         for (SubTask subTask : subTasks) {
             if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
                 result = subTask.getStartTime();
-        }
-        if (resuly != Duration.ZERO) {
-            startTime = result;
-        } else {
-            startTime = null;
         }
     }
 
     public void calculateEndTime() {
         LocalDateTime result = LocalDateTime.MAX;
 
+        if (subTasks.isEmpty()) {
+            endTime = null;
+        }
         for (SubTask subTask : subTasks) {
             if (result.toEpochSecond(ZoneOffset.UTC) < subTask.getEndTime().toEpochSecond(ZoneOffset.UTC))
                 result = subTask.getEndTime();

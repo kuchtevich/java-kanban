@@ -1,11 +1,9 @@
 package service;
 
+import exception.ValidationException;
 import model.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
@@ -88,10 +86,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task addNewTask(Task task) {
-        if (task.getId() == 0) {
-            task.setId(generateId());
-        }
+        task.setId(generateId());
         tasks.put(task.getId(), task);
+        if (task.getStartTime() != null) {
+            checkTaskTime(task);
+            prioritizedTasks.remove(task);
+            prioritizedTasks.add(task);
+        }
         return task;
     }
 
@@ -111,6 +112,9 @@ public class InMemoryTaskManager implements TaskManager {
             subTask.setId(generateId());
             subTasks.put(subTask.getId(), subTask);
             epic.addSubTask(subTask);
+            checkTaskTime(subTask);
+            prioritizedTasks.remove(subTask);
+            prioritizedTasks.add(subTask);
         }
         return subTask;
     }
@@ -122,6 +126,10 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Ошибка!");
         } else {
             tasks.put(task.getId(), task);
+            checkTaskTime(task);
+            prioritizedTasks.remove(task);
+            prioritizedTasks.add(task);
+
         }
     }
 
@@ -148,6 +156,9 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
                 epic.calculateAllFields();
+                checkTaskTime(subTask);
+                prioritizedTasks.remove(subTask);
+                prioritizedTasks.add(subTask);
             }
         }
     }
@@ -201,42 +212,29 @@ public class InMemoryTaskManager implements TaskManager {
         return epic.getSubTasks();
     }
 
-
-    public TreeSet<Task> getPrioritizedTasks() {
-        tasks.values().stream()
-                .filter(task -> task.getStartTime() != null)
-                .forEach(prioritizedTasks::add);
-
-        subTasks.values().stream()
-                .filter(subTask -> subTask.getStartTime() != null)
-                .forEach(prioritizedTasks::add);
-        return prioritizedTasks;
+    private boolean checkTasksOverlapTime(Task task, Task existTask) {
+        return !(task.getStartTime().isAfter(existTask.getEndTime()) || task.getEndTime().isBefore(existTask.getStartTime()));
     }
 
-    protected void setStartTimeEpic(Epic epic) {
-        Optional<LocalDateTime> optional = epic.getIdSubTasks().stream()
-                .map(subTasks::get)
-                .map(Task::getStartTime)
-                .min(LocalDateTime::compareTo);
-
-        optional.ifPresent(epic::setStartTime);
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
-    protected void setEndTimeEpic(Epic epic) {
-        Optional<LocalDateTime> optional = epic.getIdSubTasks().stream()
-                .map(subTasks::get)
-                .map(Task::getEndTime)
-                .max(LocalDateTime::compareTo);
-
-        optional.ifPresent(epic::setEndTimeEpic);
-    }
-
-    protected void setDuration(Epic epic) {
-        if (epic.getIdSubTasks().size() == 0) {
-            epic.setDurationEpic(null);
-        } else {
-            Duration duration = Duration.between(epic.getStartTime(), epic.getEndTimeEpic());
-            epic.setDurationEpic(duration);
+    private void checkTaskTime(Task task) {
+        List<Task> prioritizedTasks = getPrioritizedTasks();
+        prioritizedTasks.stream()
+                .filter(existTask -> existTask.getId() != task.getId())
+                .filter(existTask -> checkTasksOverlapTime(task, existTask))
+                .findFirst()
+                .ifPresent(existTask -> {
+                    throw new ValidationException("Задача " + task.getName() +
+                            " пересекается с задачей " + existTask.getName());
+                });
+        if (prioritizedTasks.stream()
+                .filter(existTask -> existTask.getId() != task.getId())
+                .anyMatch(existTask -> checkTasksOverlapTime(task, existTask))) {
+            throw new ValidationException("Задача " + task.getName() +
+                    " пересекается с другой задачей.");
         }
     }
 

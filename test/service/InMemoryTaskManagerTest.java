@@ -1,5 +1,6 @@
 package service;
 
+import exception.ValidationException;
 import model.*;
 
 import java.util.List;
@@ -87,5 +88,16 @@ class InMemoryTaskManagerTest {
         // assert
         assertEquals(task, taskManager.getTask(epicId));
     }
+
+    @Test
+    void shouldTaskOvelap() {
+        Task task = new Task("1", "описание", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        Task task1 = new Task("1", "описание", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        assertThrows(ValidationException.class, () -> {
+            taskManager.addNewTask(task);
+            taskManager.addNewTask(task1);
+        });
+    }
+
 
 }

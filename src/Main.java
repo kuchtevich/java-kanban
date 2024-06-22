@@ -34,19 +34,19 @@ public class Main {
         System.out.println("Подзадача " + subTask);
 
         SubTask subTask2 = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 3));
+                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(3200), 3));
         System.out.println("Подзадача " + subTask2);
 //
 //
-//        SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
-//                "сдать ТЗ", Status.IN_PROGRESS, 4));
-//        System.out.println("Подзадача " + subTask3);
-//
-//        SubTask subTask4 = taskManager.addNewSubtask(new SubTask("Создание нового",
-//                "ТЗ спринт 5", Status.IN_PROGRESS, 4));
-//        System.out.println("Подзадача " + subTask3);
+        SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
+                "сдать ТЗ", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 4));
+        System.out.println("Подзадача " + subTask3);
 
-        //System.out.println("История добавления информации: " + taskManager.getHistory());
+        SubTask subTask4 = taskManager.addNewSubtask(new SubTask("Создание нового",
+                "ТЗ спринт 5", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 4));
+        System.out.println("Подзадача " + subTask3);
+
+        System.out.println("История добавления информации: " + taskManager.getHistory());
 
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getSubtask(7));
@@ -60,9 +60,9 @@ public class Main {
 
         System.out.println(taskManager.getAllEpicSubtasks(4));
 
-        // subTask3.setStatus(Status.DONE);
-        //taskManager.updateEpic(epic2);
-        //System.out.println(epic2);
+        subTask3.setStatus(Status.DONE);
+        taskManager.updateEpic(epic2);
+        System.out.println(epic2);
 
 //        taskManager.removeAllTask();
 //        System.out.println(taskManager.getAllTasks());

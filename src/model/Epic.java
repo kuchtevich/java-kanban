@@ -20,6 +20,11 @@ public class Epic extends Task {
         super(id, name, description, Status.NEW);
     }
 
+    public Epic(String name, String description, LocalDateTime startTime, Duration duration) {
+        super(name, description, Status.NEW, startTime, duration);
+
+    }
+
     public List<SubTask> getSubTasks() {
         return subTasks;
     }

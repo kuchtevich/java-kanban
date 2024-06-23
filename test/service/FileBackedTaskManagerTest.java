@@ -37,15 +37,16 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void shouldBeGetInformationInFile() throws IOException {
+    public void shouldBeGetInformationInFile() {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         Task task = new Task("Cоздание новой задачи",
                 "сменить профессию", Status.NEW,
-                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000));
-        Epic epic = new Epic("Создание нового эпика", "учеба");
+                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        Epic epic = new Epic("Создание нового эпика", "учеба",
+                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
         SubTask subTask = new SubTask("Создание новой подзадачи",
                 "учеба", Status.NEW,
-                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000), 2);
+                LocalDateTime.of(2026, 12, 12, 12, 12), Duration.ofMinutes(1), 2);
         fileBackedTaskManager.addNewTask(task);
         fileBackedTaskManager.addNewEpic(epic);
         fileBackedTaskManager.addNewSubtask(subTask);
@@ -54,6 +55,4 @@ class FileBackedTaskManagerTest {
         assertEquals(fileBackedTaskManager.getAllEpics(), fileBackedTaskManager2.getAllEpics(), "Ошибка");
         assertEquals(fileBackedTaskManager.getAllSubTasks(), fileBackedTaskManager2.getAllSubTasks(), "Ошибка");
     }
-
-
 }

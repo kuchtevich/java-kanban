@@ -23,10 +23,12 @@ public class Main {
         System.out.println("Создана новая задача: " + task2);
 
 
-        Epic epic = taskManager.addNewEpic(new Epic("Создание нового эпика", "учеба"));
+        Epic epic = taskManager.addNewEpic(new Epic("Создание нового эпика", "учеба",
+                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1)));
         System.out.println("Новый эпик создан: " + epic);
 
-        Epic epic2 = taskManager.addNewEpic(new Epic("Создание нового", "сдать ТЗ"));
+        Epic epic2 = taskManager.addNewEpic(new Epic("Создание нового", "сдать ТЗ",
+                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1)));
         System.out.println("Новый эпик создан: " + epic2);
 
         SubTask subTask = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",

@@ -20,11 +20,6 @@ public class Epic extends Task {
         super(id, name, description, Status.NEW);
     }
 
-    public Epic(String name, String description, LocalDateTime startTime, Duration duration) {
-        super(name, description, Status.NEW, startTime, duration);
-
-    }
-
     public List<SubTask> getSubTasks() {
         return subTasks;
     }
@@ -86,7 +81,13 @@ public class Epic extends Task {
             duration = null;
         }
         for (SubTask subTask : subTasks) {
-            result = result.plus(subTask.getDuration());
+            if (subTask.getDuration() != null) {
+                if (result.equals(Duration.ZERO)) {
+                    duration = null;
+                } else {
+                    result = result.plus(subTask.getDuration());
+                }
+            }
         }
     }
 
@@ -98,8 +99,12 @@ public class Epic extends Task {
             startTime = null;
         }
         for (SubTask subTask : subTasks) {
-            if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
-                result = subTask.getStartTime();
+            if (subTask.getStartTime() != null) {
+                if (result.equals(LocalDateTime.MAX)) {
+                    if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
+                        result = subTask.getStartTime();
+                }
+            }
         }
     }
 

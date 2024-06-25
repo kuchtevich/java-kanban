@@ -82,12 +82,13 @@ public class Epic extends Task {
         }
         for (SubTask subTask : subTasks) {
             if (subTask.getDuration() != null) {
-                if (result.equals(Duration.ZERO)) {
-                    duration = null;
-                } else {
-                    result = result.plus(subTask.getDuration());
-                }
+                result = result.plus(subTask.getDuration());
             }
+        }
+        if (result.equals(Duration.ZERO)) {
+            duration = null;
+        } else {
+            return;
         }
     }
 
@@ -100,11 +101,14 @@ public class Epic extends Task {
         }
         for (SubTask subTask : subTasks) {
             if (subTask.getStartTime() != null) {
-                if (result.equals(LocalDateTime.MAX)) {
-                    if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
-                        result = subTask.getStartTime();
-                }
+                if (result.toEpochSecond(ZoneOffset.UTC) > subTask.getStartTime().toEpochSecond(ZoneOffset.UTC))
+                    result = subTask.getStartTime();
             }
+        }
+        if (result.equals(LocalDateTime.MAX)) {
+            startTime = result;
+        } else {
+            startTime = null;
         }
     }
 
@@ -115,8 +119,15 @@ public class Epic extends Task {
             endTime = null;
         }
         for (SubTask subTask : subTasks) {
-            if (result.toEpochSecond(ZoneOffset.UTC) < subTask.getEndTime().toEpochSecond(ZoneOffset.UTC))
-                result = subTask.getEndTime();
+            if (subTask.getStartTime() != null) {
+                if (result.toEpochSecond(ZoneOffset.UTC) < subTask.getEndTime().toEpochSecond(ZoneOffset.UTC))
+                    result = subTask.getEndTime();
+            }
+        }
+        if (result.equals(LocalDateTime.MIN)) {
+            startTime = result;
+        } else {
+            startTime = null;
         }
 
         endTime = result;

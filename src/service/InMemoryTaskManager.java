@@ -152,10 +152,10 @@ public class InMemoryTaskManager implements TaskManager {
             if (subTask.getEpicId() != saved.getEpicId()) {
                 System.out.println("Ошибка");
             } else {
+                сheckTaskTime(subTask);
                 subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
                 epic.calculateAllFields();
-                checkTaskTime(subTask);
                 prioritizedTasks.remove(subTask);
                 prioritizedTasks.add(subTask);
             }

@@ -10,10 +10,9 @@ import model.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,8 +41,7 @@ class FileBackedTaskManagerTest {
         Task task = new Task("Cоздание новой задачи",
                 "сменить профессию", Status.NEW,
                 LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
-        Epic epic = new Epic("Создание нового эпика", "учеба",
-                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        Epic epic = new Epic("Создание нового эпика", "учеба");
         SubTask subTask = new SubTask("Создание новой подзадачи",
                 "учеба", Status.NEW,
                 LocalDateTime.of(2026, 12, 12, 12, 12), Duration.ofMinutes(1), 2);

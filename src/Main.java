@@ -10,16 +10,16 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Поехали!");
 
-        TaskManager taskManager = Manager.getDefault();
+        TaskManager taskManager = new InMemoryTaskManager();
 
         Task task = taskManager.addNewTask(new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000)));
+                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1)));
 
         System.out.println("Создана новая задача: " + task);
 
 
         Task task2 = taskManager.addNewTask(new Task("Cоздание новой задачи",
-                "сменить город", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200)));
+                "сменить город", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(1)));
         System.out.println("Создана новая задача: " + task2);
 
 
@@ -30,20 +30,20 @@ public class Main {
         System.out.println("Новый эпик создан: " + epic2);
 
         SubTask subTask = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 3));
+                "учеба", Status.IN_PROGRESS, LocalDateTime.of(2023, 12, 12, 12, 12), Duration.ofMinutes(1), 3));
         System.out.println("Подзадача " + subTask);
 
         SubTask subTask2 = taskManager.addNewSubtask(new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(3200), 3));
+                "учеба", Status.IN_PROGRESS, LocalDateTime.of(2025, 1, 12, 12, 12), Duration.ofMinutes(1), 3));
         System.out.println("Подзадача " + subTask2);
 //
 //
         SubTask subTask3 = taskManager.addNewSubtask(new SubTask("Создание нового",
-                "сдать ТЗ", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 4));
+                "сдать ТЗ", Status.IN_PROGRESS, LocalDateTime.of(2025, 12, 12, 12, 12), Duration.ofMinutes(1), 4));
         System.out.println("Подзадача " + subTask3);
 
         SubTask subTask4 = taskManager.addNewSubtask(new SubTask("Создание нового",
-                "ТЗ спринт 5", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(43200), 4));
+                "ТЗ спринт 5", Status.IN_PROGRESS, LocalDateTime.of(2026, 12, 12, 12, 12), Duration.ofMinutes(1), 4));
         System.out.println("Подзадача " + subTask3);
 
         System.out.println("История добавления информации: " + taskManager.getHistory());

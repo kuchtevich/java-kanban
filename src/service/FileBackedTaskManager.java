@@ -59,14 +59,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String description = columns[2];
         Status status = Status.valueOf(columns[3]);
         TaskType type = TaskType.valueOf(columns[5]);
-        LocalDateTime startTime = LocalDateTime.parse(columns[6]);
-        Duration duration = Duration.ofMinutes(Long.parseLong(columns[7]));
-
         switch (type) {
             case TASK:
-                return new Task(taskId, name, description, status, startTime, duration);
+                return new Task(taskId, name, description, status, LocalDateTime.parse(columns[6]), Duration.ofMinutes(Long.parseLong(columns[7])));
             case SUBTASK:
-                return new SubTask(taskId, name, description, status, startTime, duration, Integer.parseInt(columns[4]));
+                return new SubTask(taskId, name, description, status, LocalDateTime.parse(columns[6]), Duration.ofMinutes(Long.parseLong(columns[7])), Integer.parseInt(columns[4]));
             case EPIC:
                 return new Epic(taskId, name, description);
         }
@@ -101,7 +98,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             + task.getStartTime() + ","
                             + task.getDuration().toMinutes() + ",";
         } else {
-            return "";
+            result = task.getId() + ","
+                    + task.getName() + ","
+                    + task.getDescription() + ","
+                    + task.getStatus() + ","
+                    + task.getEpicId() + ","
+                    + task.getType() + ","
+                    + null + ","
+                    + null + ",";
         }
         return result;
     }

@@ -88,7 +88,7 @@ public class Epic extends Task {
         if (result.equals(Duration.ZERO)) {
             duration = null;
         } else {
-            return;
+            duration = result;
         }
     }
 
@@ -106,14 +106,14 @@ public class Epic extends Task {
             }
         }
         if (result.equals(LocalDateTime.MAX)) {
-            startTime = result;
-        } else {
             startTime = null;
+        } else {
+            startTime = result;
         }
     }
 
     public void calculateEndTime() {
-        LocalDateTime result = LocalDateTime.MAX;
+        LocalDateTime result = LocalDateTime.MIN;
 
         if (subTasks.isEmpty()) {
             endTime = null;
@@ -125,12 +125,10 @@ public class Epic extends Task {
             }
         }
         if (result.equals(LocalDateTime.MIN)) {
-            startTime = result;
+            endTime = null;
         } else {
-            startTime = null;
+            endTime = result;
         }
-
-        endTime = result;
     }
 
     public LocalDateTime getEndTime() {

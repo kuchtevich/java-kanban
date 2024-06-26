@@ -47,6 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllTask() {
         tasks.clear();
+        prioritizedTasks.remove(tasks.values());
     }
 
     @Override
@@ -55,12 +56,14 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic : epics.values()) {
             epic.removeAllSubtasks();
         }
+        prioritizedTasks.remove(subTasks.values());
     }
 
     @Override
     public void removeAllEpics() {
         subTasks.clear();
         epics.clear();
+        prioritizedTasks.remove(tasks.values());
     }
 
     @Override
@@ -126,9 +129,8 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             checkTaskTime(task);
             tasks.put(task.getId(), task);
-            prioritizedTasks.remove(task);
+            prioritizedTasks.remove(saved);
             prioritizedTasks.add(task);
-
         }
     }
 
@@ -140,23 +142,24 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             saved.setName(epic.getName());
             saved.setDescription(epic.getDescription());
+            epic.calculateAllFields();
         }
     }
 
     @Override
     public void updateSubtask(SubTask subTask) {
-        SubTask saved = subTasks.get(subTask.getId());
+        final SubTask saved = subTasks.get(subTask.getId());
         if (saved == null) {
             System.out.println("Ошибка!");
         } else {
             if (subTask.getEpicId() != saved.getEpicId()) {
                 System.out.println("Ошибка");
             } else {
-                сheckTaskTime(subTask);
                 subTasks.put(subTask.getId(), subTask);
                 Epic epic = epics.get(subTask.getId());
+                checkTaskTime(subTask);
                 epic.calculateAllFields();
-                prioritizedTasks.remove(subTask);
+                prioritizedTasks.remove(saved);
                 prioritizedTasks.add(subTask);
             }
         }
@@ -182,6 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (SubTask subTask : epic.getSubTasks()) {
             subTasks.remove(subTask.getId());
+            prioritizedTasks.remove(subTask);
         }
 
         epics.remove(id);
@@ -230,8 +234,6 @@ public class InMemoryTaskManager implements TaskManager {
                             " пересекается с задачей " + existTask.getName());
                 });
     }
-
-
 }
 
 

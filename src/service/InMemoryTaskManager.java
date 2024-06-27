@@ -168,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
-            prioritizedTasks.remove(id);
+            prioritizedTasks.remove(tasks.get(id));
         } else {
             System.out.println("Ошибка.");
         }
@@ -203,7 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(epicId);
 
         epic.removeSubTask(subTask);
-        prioritizedTasks.remove(id);
+        prioritizedTasks.remove(subTask);
         subTasks.remove(id);
     }
 

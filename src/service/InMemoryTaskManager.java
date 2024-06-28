@@ -54,6 +54,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubtasks() {
+        for (Epic epic : epics.values()) {
+            epic.removeAllSubtasks();
+        }
         for (SubTask subTask : subTasks.values()) {
             prioritizedTasks.remove(subTask);
         }
@@ -62,9 +65,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllEpics() {
-        for (Epic epic : epics.values()) {
-            prioritizedTasks.remove(epic);
-        }
         for (SubTask subTask : subTasks.values()) {
             prioritizedTasks.remove(subTask);
         }

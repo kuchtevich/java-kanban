@@ -5,6 +5,8 @@ import model.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager fileBackedTaskManager = Manager.getDefaultFileBackedTaskManager();
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         try (var bufferedReader = new BufferedReader(new FileReader(file))) {
             int maxId = 0;
             Task task;
@@ -57,12 +59,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String description = columns[2];
         Status status = Status.valueOf(columns[3]);
         TaskType type = TaskType.valueOf(columns[5]);
-
         switch (type) {
             case TASK:
-                return new Task(taskId, name, description, status);
+                return new Task(taskId, name, description, status, LocalDateTime.parse(columns[6]), Duration.ofMinutes(Long.parseLong(columns[7])));
             case SUBTASK:
-                return new SubTask(taskId, name, description, status, Integer.parseInt(columns[4]));
+                return new SubTask(taskId, name, description, status, LocalDateTime.parse(columns[6]), Duration.ofMinutes(Long.parseLong(columns[7])), Integer.parseInt(columns[4]));
             case EPIC:
                 return new Epic(taskId, name, description);
         }
@@ -75,7 +76,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allTasks.addAll(getAllEpics());
         allTasks.addAll(getAllSubTasks());
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write("id,name,description,status,epic,type" + "\n");
+            fileWriter.write("id,name,description,status,epic,type, startTime, duration," + "\n");
             for (Task task : allTasks) {
                 fileWriter.write(toString(task) + "\n");
             }
@@ -86,15 +87,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private String toString(Task task) {
         String result;
-
-        result =
-                task.getId() + ","
-                        + task.getName() + ","
-                        + task.getDescription() + ","
-                        + task.getStatus() + ","
-                        + task.getEpicId() + ","
-                        + task.getType() + ",";
-
+        if (task.getStartTime() != null && task.getDuration() != null) {
+            result =
+                    task.getId() + ","
+                            + task.getName() + ","
+                            + task.getDescription() + ","
+                            + task.getStatus() + ","
+                            + task.getEpicId() + ","
+                            + task.getType() + ","
+                            + task.getStartTime() + ","
+                            + task.getDuration().toMinutes() + ",";
+        } else {
+            result = task.getId() + ","
+                    + task.getName() + ","
+                    + task.getDescription() + ","
+                    + task.getStatus() + ","
+                    + task.getEpicId() + ","
+                    + task.getType() + ","
+                    + null + ","
+                    + null + ",";
+        }
         return result;
     }
 

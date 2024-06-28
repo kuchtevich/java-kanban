@@ -10,42 +10,47 @@ import model.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
 
-    private File saveFile;
+    TaskManager taskManager;
+    private File file;
 
     @BeforeEach
     public void beforeEach() throws IOException {
-        saveFile = File.createTempFile("file", ".csv");
+        file = File.createTempFile("file", ".csv");
     }
 
     @AfterEach
     public void afterEach() {
-        if (saveFile != null && saveFile.exists()) {
-            boolean delete = saveFile.delete();
+        if (file != null && file.exists()) {
+            boolean delete = file.delete();
             System.out.println(delete + " Файл успешно удален");
         }
     }
 
-// 6yt
-
     @Test
-    public void shouldBeGetInformationInFile() throws IOException {
-        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(saveFile);
+    public void shouldBeGetInformationInFile() {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         Task task = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW);
+                "сменить профессию", Status.NEW,
+                LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
         Epic epic = new Epic("Создание нового эпика", "учеба");
         SubTask subTask = new SubTask("Создание новой подзадачи",
-                "учеба", Status.IN_PROGRESS, 2);
+                "учеба", Status.NEW,
+                LocalDateTime.of(2026, 12, 12, 12, 12), Duration.ofMinutes(1), 2);
         fileBackedTaskManager.addNewTask(task);
         fileBackedTaskManager.addNewEpic(epic);
         fileBackedTaskManager.addNewSubtask(subTask);
-        FileBackedTaskManager fileBackedTaskManager2 = FileBackedTaskManager.loadFromFile(saveFile);
-        assertEquals(fileBackedTaskManager.getAllTasks(), fileBackedTaskManager2.getAllTasks(), "Списки задач не совпадают");
-        assertEquals(fileBackedTaskManager.getAllEpics(), fileBackedTaskManager2.getAllEpics(), "Списки эпиков не совпадают");
-        assertEquals(fileBackedTaskManager.getAllSubTasks(), fileBackedTaskManager2.getAllSubTasks(), "Списки подзадач не совпадают");
+        FileBackedTaskManager fileBackedTaskManager2 = FileBackedTaskManager.loadFromFile(file);
+        assertEquals(fileBackedTaskManager.getAllTasks(), fileBackedTaskManager2.getAllTasks(), "ОШибка");
+        assertEquals(fileBackedTaskManager.getAllEpics(), fileBackedTaskManager2.getAllEpics(), "Ошибка");
+        assertEquals(fileBackedTaskManager.getAllSubTasks(), fileBackedTaskManager2.getAllSubTasks(), "Ошибка");
     }
 }

@@ -1,8 +1,11 @@
 package service;
 
+import exception.ValidationException;
 import model.*;
 
 import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +25,9 @@ class InMemoryTaskManagerTest {
     @Test
     void shouldBeTheTaskIsEquals() {
         Task task = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW);
+                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000));
         Task task2 = new Task("Cоздание новой задачи",
-                "сменить профессию", Status.NEW);
+                "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000));
         assertEquals(task, task2, "Задачи не совпадают.");
     }
 
@@ -34,7 +37,7 @@ class InMemoryTaskManagerTest {
     void shouldBeHistoryManagerSavePreviousVersion() {
         // arrange // given
         int taskId = 1, expectedHistorySize = 1;
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW);
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000));
         taskManager.addNewTask(task);
 
         // act     // when
@@ -51,7 +54,7 @@ class InMemoryTaskManagerTest {
     void shouldAddTaskAndGetTaskById() {
         // arrange
         int taskId = 1;
-        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW);
+        Task task = new Task("Cоздание новой задачи", "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000));
 
         // act
         taskManager.addNewTask(task);
@@ -64,7 +67,7 @@ class InMemoryTaskManagerTest {
     void shouldAddSubTaskAndGetSubTaskById() {
         // arrange
         int taskId = 1, eoicId = 33;
-        Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, taskId);
+        Task task = new SubTask("Cоздание новой задачи", "сменить профессию", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(600000), taskId);
 
         // act
         taskManager.addNewTask(task);
@@ -85,5 +88,16 @@ class InMemoryTaskManagerTest {
         // assert
         assertEquals(task, taskManager.getTask(epicId));
     }
+
+    @Test
+    void shouldTaskOvelap() {
+        Task task = new Task("1", "описание", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        Task task1 = new Task("1", "описание", Status.NEW, LocalDateTime.of(2024, 12, 12, 12, 12), Duration.ofMinutes(1));
+        assertThrows(ValidationException.class, () -> {
+            taskManager.addNewTask(task);
+            taskManager.addNewTask(task1);
+        });
+    }
+
 
 }

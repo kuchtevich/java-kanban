@@ -51,6 +51,7 @@ public class Main {
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getSubtask(7));
         System.out.println(taskManager.getAllEpics());
+
 //
 //
 //        task2.setName("Задача.");

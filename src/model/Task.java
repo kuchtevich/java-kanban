@@ -82,11 +82,7 @@ public class Task {
     }
 
     public LocalDateTime getStartTime() {
-        if (startTime != null) {
-            return startTime;
-        } else {
-            return null;
-        }
+        return startTime;
     }
 
     public void setStartTime(LocalDateTime startTime) {
@@ -102,7 +98,11 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plusMinutes(duration.toMinutes());
+        if (startTime != null) {
+            return startTime.plusMinutes(duration.toMinutes());
+        } else {
+            return null;
+        }
     }
 
     @Override

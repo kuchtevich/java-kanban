@@ -82,7 +82,11 @@ public class Task {
     }
 
     public LocalDateTime getStartTime() {
-        return startTime;
+        if (startTime != null) {
+            return startTime;
+        } else {
+            return null;
+        }
     }
 
     public void setStartTime(LocalDateTime startTime) {

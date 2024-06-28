@@ -51,24 +51,27 @@ public class Main {
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getSubtask(7));
         System.out.println(taskManager.getAllEpics());
-
-
-        task2.setName("Задача.");
-        task2.setStatus(Status.IN_PROGRESS);
-        taskManager.updateTask(task2);
-        System.out.println(taskManager.getEpic(3));
-
-        System.out.println(taskManager.getAllEpicSubtasks(4));
-
-        subTask3.setStatus(Status.DONE);
-        taskManager.updateEpic(epic2);
-        System.out.println(epic2);
+//
+//
+//        task2.setName("Задача.");
+//        task2.setStatus(Status.IN_PROGRESS);
+//        taskManager.updateTask(task2);
+//        System.out.println(taskManager.getEpic(3));
+//
+//        System.out.println(taskManager.getAllEpicSubtasks(4));
+//
+//        subTask3.setStatus(Status.DONE);
+//        taskManager.updateEpic(epic2);
+//        System.out.println(epic2);
 
 //        taskManager.removeAllTask();
 //        System.out.println(taskManager.getAllTasks());
 //
 //        taskManager.removeAllEpics();
 //        System.out.println(taskManager.getAllEpics());
+
+//taskManager.removeAllSubtasks();
+//System.out.println(taskManager.getAllSubTasks());
 //
 //        taskManager.deleteSubtask(7);
 //        System.out.println(taskManager.getEpic(4));
@@ -78,5 +81,6 @@ public class Main {
 //        System.out.println("Удалено. " + taskManager.getEpic(4));
 //
 //        System.out.println("История добавления информации: " + taskManager.getHistory());
+
     }
 }

@@ -1,7 +1,7 @@
 package handler;
 
-import adapter.DurationAdapter;
-import adapter.LocalDateTimeAdapter;
+import adapters.DurationAdapter;
+import adapters.LocalDateAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
@@ -21,7 +21,7 @@ public class BaseHttpHandler implements HttpHandler {
     public BaseHttpHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
         gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .create();
     }

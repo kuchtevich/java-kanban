@@ -1,8 +1,7 @@
 package handler;
 
 import com.sun.net.httpserver.HttpExchange;
-import exception.ManagerSaveException;
-import exception.ValidationException;
+import exception.NotFoundException;
 import model.Task;
 import service.TaskManager;
 
@@ -61,31 +60,37 @@ public class TaskHandler extends BaseHttpHandler {
     private void tasksPost(HttpExchange httpExchange) throws IOException {
         String[] splitStrings = httpExchange.getRequestURI().getPath().split("/");
         String requestBody = readText(httpExchange);
-        Task newTask = gson.fromJson(requestBody, Task.class);
-        Optional<Integer> postId = getIdFromPath(httpExchange);
+        try {
 
-        if (splitStrings.length == 2) {
-            try {
-                taskManager.addNewTask(newTask);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getAllTasks()));
-            } catch (RuntimeException e) {
-                sendHasInteractions(httpExchange, e.message());
-            } catch (Exception e) {
-                sendInternalServerError(httpExchange, e.getMessage());
+            Task newTask = gson.fromJson(requestBody, Task.class);
+            Optional<Integer> postId = getIdFromPath(httpExchange);
+
+            if (splitStrings.length == 2) {
+                try {
+                    taskManager.addNewTask(newTask);
+                    sendSuccess(httpExchange, gson.toJson(taskManager.getAllTasks()));
+                } catch (RuntimeException e) {
+                    sendHasInteractions(httpExchange, e.getMessage());
+                } catch (Exception e) {
+                    sendInternalServerError(httpExchange, e.getMessage());
+                }
+            } else if (newTask.getId() != 0 && postId.isPresent()) { //update Task
+                try {
+                    taskManager.updateTask(newTask);
+                    sendSuccess(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
+                } catch (NotFoundException e) {
+                    sendNotFound(httpExchange, e.getMessage());
+                } catch (RuntimeException e) {
+                    sendHasInteractions(httpExchange, e.getMessage());
+                } catch (Exception e) {
+                    sendInternalServerError(httpExchange, e.getMessage());
+                }
+            } else {
+                sendNotFound(httpExchange, "Not found");
             }
-        } else if (newTask.getId() != 0 && postId.isPresent()) { //update Task
-            try {
-                taskManager.updateTask(newTask);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
-            } catch (RuntimeException e) {
-                sendHasInteractions(httpExchange, e.message());
-            } catch (NotException e) {
-                sendNotFound(httpExchange, e.message());
-            } catch (Exception e) {
-                sendInternalServerError(httpExchange, e.getMessage());
-            }
-        } else {
-            sendNotFound(httpExchange, "Not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendInternalServerError(httpExchange, e.getMessage());
         }
     }
 
@@ -96,8 +101,8 @@ public class TaskHandler extends BaseHttpHandler {
             try {
                 taskManager.deleteTask(postId.get());
                 sendText(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
-            } catch (NotException e) {
-                sendNotFound(httpExchange, e.message());
+            } catch (NotFoundException e) {
+                sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {
                 sendInternalServerError(httpExchange, e.getMessage());
             }

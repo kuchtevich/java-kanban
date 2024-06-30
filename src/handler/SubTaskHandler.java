@@ -2,7 +2,6 @@ package handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import exception.NotFoundException;
-import exception.TimeException;
 import model.SubTask;
 import service.TaskManager;
 
@@ -39,16 +38,16 @@ public class SubTaskHandler extends BaseHttpHandler {
         String response;
         Optional<Integer> postId = getIdFromPath(httpExchange);
 
-        if (splitStrings.length == 2) { //get allSubTasks
+        if (splitStrings.length == 2) {
             try {
-                response = gson.toJson(taskManager.getAllSubTask());
+                response = gson.toJson(taskManager.getAllSubTasks());
                 sendText(httpExchange, response);
             } catch (Exception e) {
                 sendInternalServerError(httpExchange, e.getMessage());
             }
-        } else if (postId.isPresent()) { //get subTask(id)
+        } else if (postId.isPresent()) {
             try {
-                SubTask subTask = taskManager.getSubTask(postId.get());
+                SubTask subTask = taskManager.getSubtask(postId.get());
                 response = gson.toJson(subTask);
                 sendText(httpExchange, response);
             } catch (Exception e) {
@@ -65,23 +64,23 @@ public class SubTaskHandler extends BaseHttpHandler {
         SubTask newSubTask = gson.fromJson(requestBody, SubTask.class);
         Optional<Integer> postId = getIdFromPath(httpExchange);
 
-        if (splitStrings.length == 2) { //create subTask
+        if (splitStrings.length == 2) {
             try {
-                taskManager.createSubTask(newSubTask);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getAllSubTask()));
-            } catch (TimeException e) {
+                taskManager.addNewSubtask(newSubTask);
+                sendSuccess(httpExchange, gson.toJson(taskManager.getAllSubTasks()));
+            } catch (RuntimeException e) {
                 sendHasInteractions(httpExchange, e.getMessage());
             } catch (Exception e) {
                 sendInternalServerError(httpExchange, e.getMessage());
             }
-        } else if (newSubTask.getId() != 0 && postId.isPresent()) { //update subTask
+        } else if (newSubTask.getId() != 0 && postId.isPresent()) {
             try {
-                taskManager.updateSubTask(newSubTask);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getSubTask(postId.get())));
-            } catch (TimeException e) {
-                sendHasInteractions(httpExchange, e.getMessage());
+                taskManager.updateSubtask(newSubTask);
+                sendSuccess(httpExchange, gson.toJson(taskManager.getSubtask(postId.get())));
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
+            } catch (RuntimeException e) {
+                sendHasInteractions(httpExchange, e.getMessage());
             } catch (Exception e) {
                 sendInternalServerError(httpExchange, e.getMessage());
             }
@@ -93,10 +92,10 @@ public class SubTaskHandler extends BaseHttpHandler {
     private void subTasksDelete(HttpExchange httpExchange) throws IOException {
         Optional<Integer> postId = getIdFromPath(httpExchange);
 
-        if (postId.isPresent()) { //delete subTask
+        if (postId.isPresent()) {
             try {
-                taskManager.deleteSubTask(postId.get());
-                sendText(httpExchange, gson.toJson(taskManager.getSubTask(postId.get())));
+                taskManager.deleteSubtask(postId.get());
+                sendText(httpExchange, gson.toJson(taskManager.getSubtask(postId.get())));
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {

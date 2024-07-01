@@ -220,12 +220,22 @@ public class InMemoryTaskManager implements TaskManager {
         return !(task.getStartTime().isAfter(existTask.getEndTime()) || task.getEndTime().isBefore(existTask.getStartTime()));
     }
 
-    public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(prioritizedTasks);
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        tasks.values().stream()
+                .filter(Objects::nonNull)
+                .filter(task -> task.getStartTime() != null)
+                .forEach(prioritizedTasks::add);
+
+        subTasks.values().stream()
+                .filter(Objects::nonNull)
+                .filter(subTask -> subTask.getStartTime() != null)
+                .forEach(prioritizedTasks::add);
+        return prioritizedTasks;
     }
 
     private void checkTaskTime(Task task) {
-        List<Task> prioritizedTasks = getPrioritizedTasks();
+        TreeSet<Task> prioritizedTasks = getPrioritizedTasks();
         prioritizedTasks.stream()
                 .filter(existTask -> existTask.getId() != task.getId())
                 .filter(existTask -> checkTasksOverlapTime(task, existTask))

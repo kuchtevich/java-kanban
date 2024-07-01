@@ -3,6 +3,7 @@ package service;
 import model.*;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     Task getTask(int id);
@@ -44,4 +45,6 @@ public interface TaskManager {
     void removeAllSubtasks();
 
     void removeAllEpics();
+
+    TreeSet<Task> getPrioritizedTasks();
 }

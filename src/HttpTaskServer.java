@@ -1,7 +1,5 @@
 import com.sun.net.httpserver.HttpServer;
-import handler.EpicHandler;
-import handler.SubTaskHandler;
-import handler.TaskHandler;
+import handler.*;
 import service.Manager;
 import service.TaskManager;
 
@@ -29,6 +27,7 @@ public class HttpTaskServer {
         httpServer.createContext("/subtasks", new SubTaskHandler(taskManager));
         httpServer.createContext("/epics", new EpicHandler(taskManager));
         httpServer.createContext("/prioritized", new TaskHandler(taskManager));
+        httpServer.createContext("/history", new HistorHandler(taskManager));
 
         httpServer.start();
         System.out.println("Server start on the PORT: " + PORT);

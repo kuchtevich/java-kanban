@@ -49,7 +49,7 @@ public class SubTaskHandler extends BaseHttpHandler {
             try {
                 SubTask subTask = taskManager.getSubtask(postId.get());
                 response = gson.toJson(subTask);
-                sendText(httpExchange, response);
+                sendText(httpExchange, gson.toJson(taskManager.getSubtask(postId.get())));
             } catch (Exception e) {
                 sendNotFound(httpExchange, e.getMessage());
             }
@@ -67,7 +67,7 @@ public class SubTaskHandler extends BaseHttpHandler {
         if (splitStrings.length == 2) {
             try {
                 taskManager.addNewSubtask(newSubTask);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getAllSubTasks()));
+                sendSuccess(httpExchange, gson.toJson(taskManager.getSubtask(postId.get())));
             } catch (RuntimeException e) {
                 sendHasInteractions(httpExchange, e.getMessage());
             } catch (Exception e) {
@@ -95,7 +95,7 @@ public class SubTaskHandler extends BaseHttpHandler {
         if (postId.isPresent()) {
             try {
                 taskManager.deleteSubtask(postId.get());
-                sendText(httpExchange, gson.toJson(taskManager.getSubtask(postId.get())));
+                sendHandler(httpExchange);
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {

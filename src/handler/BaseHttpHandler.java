@@ -58,7 +58,11 @@ public class BaseHttpHandler implements HttpHandler {
         }
     }
 
-    //считывание тела запроса
+    protected void sendHandler(HttpExchange h) throws IOException {
+        h.sendResponseHeaders(200, -1);
+        h.close();
+    }
+
     protected String readText(HttpExchange h) throws IOException {
         return new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
     }

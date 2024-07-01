@@ -48,7 +48,7 @@ public class TaskHandler extends BaseHttpHandler {
             try {
                 Task task = taskManager.getTask(postId.get());
                 response = gson.toJson(task);
-                sendText(httpExchange, response);
+                sendText(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
             } catch (Exception e) {
                 sendNotFound(httpExchange, e.getMessage());
             }
@@ -68,7 +68,7 @@ public class TaskHandler extends BaseHttpHandler {
             if (splitStrings.length == 2) {
                 try {
                     taskManager.addNewTask(newTask);
-                    sendSuccess(httpExchange, gson.toJson(taskManager.getAllTasks()));
+                    sendSuccess(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
                 } catch (RuntimeException e) {
                     sendHasInteractions(httpExchange, e.getMessage());
                 } catch (Exception e) {
@@ -100,7 +100,7 @@ public class TaskHandler extends BaseHttpHandler {
         if (postId.isPresent()) {
             try {
                 taskManager.deleteTask(postId.get());
-                sendText(httpExchange, gson.toJson(taskManager.getTask(postId.get())));
+                sendHandler(httpExchange);
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {

@@ -68,13 +68,13 @@ public class EpicHandler extends BaseHttpHandler {
         if (splitStrings.length == 2) {
             try {
                 taskManager.addNewEpic(newEpic);
-                sendSuccess(httpExchange, gson.toJson(taskManager.getAllEpics()));
+                sendSuccess(httpExchange, gson.toJson(taskManager.getEpic(postId.get())));
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {
                 sendInternalServerError(httpExchange, e.getMessage());
             }
-        } else if (newEpic.getId() != 0 && postId.isPresent()) { //update epic
+        } else if (newEpic.getId() != 0 && postId.isPresent()) {
             try {
                 taskManager.updateEpic(newEpic);
                 sendSuccess(httpExchange, gson.toJson(taskManager.getEpic(postId.get())));
@@ -96,7 +96,7 @@ public class EpicHandler extends BaseHttpHandler {
         if (postId.isPresent()) {
             try {
                 taskManager.deleteEpic(postId.get());
-                sendText(httpExchange, gson.toJson(taskManager.getEpic(postId.get())));
+                sendHandler(httpExchange);
             } catch (NotFoundException e) {
                 sendNotFound(httpExchange, e.getMessage());
             } catch (Exception e) {
